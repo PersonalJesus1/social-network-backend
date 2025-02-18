@@ -1,0 +1,223 @@
+{
+	"info": {
+		"_postman_id": "a30307f7-7a6a-4a58-aa1d-500d97b8685b",
+		"name": "SocialNetworkBackendCollection",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "41986678"
+	},
+	"item": [
+		{
+			"name": "GET Requests",
+			"item": [
+				{
+					"name": "http://localhost:8080/api/v1/users/",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{url}}/users"
+					},
+					"response": []
+				},
+				{
+					"name": "http://localhost:8080/api/v1/users/1",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{url}}/users/1"
+					},
+					"response": []
+				},
+				{
+					"name": "http://localhost:8080/api/v1/messages/user/1",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{url}}/messages/user/1"
+					},
+					"response": []
+				},
+				{
+					"name": "http://localhost:8080/api/v1/messages/user/1",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{url}}/messages"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "POST Requests",
+			"item": [
+				{
+					"name": "http://localhost:8080/api/v1/users",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"userName\": \"John\",\r\n  \"userSurname\": \"Doe\",\r\n  \"userEmail\": \"john.doe@example.com\",\r\n  \"userPassword\": \"password123\",\r\n  \"sex\": \"MALE\"\r\n}\r\n\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{url}}/users"
+					},
+					"response": []
+				},
+				{
+					"name": "http://localhost:8080/api/v1/messages",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"creatorId\": 1,\r\n  \"receiverId\": 2,\r\n  \"messageText\": \"Hello, how are you?\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{url}}/messages"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "PUT Requests",
+			"item": [
+				{
+					"name": "http://localhost:8080/api/v1/users/1",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"userName\": \"John\",\r\n  \"userSurname\": \"Doe\",\r\n  \"userEmail\": \"john.doe@example.com\"  \r\n}\r\n\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{url}}/users/1"
+					},
+					"response": []
+				},
+				{
+					"name": "http://localhost:8080/api/v1/messages/1",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"messageText\": \"Updated message text\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{url}}/messages/1"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "DELETE Requests",
+			"item": [
+				{
+					"name": "http://localhost:8080/api/v1/users/1",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": "{{url}}/users/1"
+					},
+					"response": []
+				},
+				{
+					"name": "http://localhost:8080/api/v1/messages/1",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": "{{url}}/messages/1"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "{{url}}/auth/login",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const myData = pm.response.json();\r",
+							"\r",
+							"pm.environment.set('token',myData.token);"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer{{token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"email\": \"john.doe@example.com\",\r\n  \"password\": \"password123\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "{{url}}/auth/login"
+			},
+			"response": []
+		}
+	]
+}

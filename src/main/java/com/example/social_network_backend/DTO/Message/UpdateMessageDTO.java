@@ -1,14 +1,8 @@
 package com.example.social_network_backend.DTO.Message;
 
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
-public class UpdateMessageDTO {
-    private String messageText;
-
-    public String getMessageText() {
-        return messageText;
-    }
-
-    public void setMessageText(String messageText) {
-        this.messageText = messageText;
-    }
+public record UpdateMessageDTO(@NotNull(message = "Message text cannot be null")
+                               @Size(max = 2000, message = "Message cannot exceed 2000 characters") String text) {
 }

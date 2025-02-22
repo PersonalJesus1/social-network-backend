@@ -1,31 +1,10 @@
 package com.example.social_network_backend.DTO.Message;
 
-public class CreateMessageDTO {
-    private String messageText;
-    private Long creatorId;
-    private Long receiverId;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
-    public String getMessageText() {
-        return messageText;
-    }
-
-    public void setMessageText(String messageText) {
-        this.messageText = messageText;
-    }
-
-    public Long getCreatorId() {
-        return creatorId;
-    }
-
-    public void setCreatorId(Long creatorId) {
-        this.creatorId = creatorId;
-    }
-
-    public Long getReceiverId() {
-        return receiverId;
-    }
-
-    public void setReceiverId(Long receiverId) {
-        this.receiverId = receiverId;
-    }
+public record CreateMessageDTO(
+        @NotNull(message = "Message text cannot be null") @Size(max = 2000, message = "Message cannot exceed 2000 characters") String text,
+        @NotNull(message = "This field is required") Long creatorId,
+        @NotNull(message = "This field is required") Long receiverId) {
 }

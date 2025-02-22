@@ -1,31 +1,10 @@
 package com.example.social_network_backend.DTO.User;
 
-public class UpdateUserDTO {
-    private String userName;
-    private String userSurname;
-    private String userEmail;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
-    public String getUserName() {
-        return userName;
-    }
-
-    public void setUserName(String userName) {
-        this.userName = userName;
-    }
-
-    public String getUserSurname() {
-        return userSurname;
-    }
-
-    public void setUserSurname(String userSurname) {
-        this.userSurname = userSurname;
-    }
-
-    public String getUserEmail() {
-        return userEmail;
-    }
-
-    public void setUserEmail(String userEmail) {
-        this.userEmail = userEmail;
-    }
+public record UpdateUserDTO(@NotNull(message = "Name is required") @Size(max = 64, message = "Name cannot exceed 64 characters") String name,
+                            @NotNull(message = "Surname is required") @Size(max = 64, message = "Surname cannot exceed 64 characters") String surname,
+                            @NotNull(message = "Email is required") @Email(message = "Must have format of email") String email) {
 }

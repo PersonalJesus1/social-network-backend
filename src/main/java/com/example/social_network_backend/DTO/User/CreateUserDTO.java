@@ -1,56 +1,15 @@
 package com.example.social_network_backend.DTO.User;
 
-// CreateUserDTO
-
+import com.example.social_network_backend.Entities.UserRole;
 import com.example.social_network_backend.Entities.UserSex;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
-//Этот класс используется для получения данных при создании нового пользователя.
-// Клиент отправляет данные на сервер (в теле запроса), и эти данные попадают в объект CreateUserDTO.
-public class CreateUserDTO {
-    private String userName;
-    private String userSurname;
-    private String userEmail;
-    private String userPassword;
-    private UserSex sex;
-
-
-    public String getUserName() {
-        return userName;
-    }
-
-    public void setUserName(String userName) {
-        this.userName = userName;
-    }
-
-    public String getUserSurname() {
-        return userSurname;
-    }
-
-    public void setUserSurname(String userSurname) {
-        this.userSurname = userSurname;
-    }
-
-    public String getUserEmail() {
-        return userEmail;
-    }
-
-    public void setUserEmail(String userEmail) {
-        this.userEmail = userEmail;
-    }
-
-    public String getUserPassword() {
-        return userPassword;
-    }
-
-    public void setUserPassword(String userPassword) {
-        this.userPassword = userPassword;
-    }
-
-    public UserSex getSex() {
-        return sex;
-    }
-
-    public void setSex(UserSex sex) {
-        this.sex = sex;
-    }
+public record CreateUserDTO(@NotNull(message = "Name is required")@Size(max = 64, message = "Name cannot exceed 64 characters")  String name,
+                            @NotNull(message = "Surname is required")@Size(max = 64, message = "Surname cannot exceed 64 characters") String surname,
+                            @NotNull(message = "Email is required") @Email(message = "Must have format of email")  String email,
+                            @NotNull(message = "Password is required") @Size(min = 8, max = 14, message = "Password should be from 8 to 14 characters")  String password,
+                            @NotNull(message = "Sex is required") UserSex sex,
+                            @NotNull(message = "This field is required") UserRole userRole) {
 }

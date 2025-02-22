@@ -3,42 +3,44 @@ package com.example.social_network_backend.Controllers;
 import com.example.social_network_backend.DTO.Message.CreateMessageDTO;
 import com.example.social_network_backend.DTO.Message.ResponseMessageDTO;
 import com.example.social_network_backend.DTO.Message.UpdateMessageDTO;
-import com.example.social_network_backend.Services.MessageService;
+import com.example.social_network_backend.Facades.MessageFacade;
+import jakarta.validation.Valid;
+import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@AllArgsConstructor
 @RestController
 @RequestMapping("/api/v1/messages")
 public class MessageController {
 
-    private final MessageService messageService;
+    private final MessageFacade messageFacade;
 
-    public MessageController(MessageService messageService) {
-        this.messageService = messageService;
-    }
     @GetMapping
     public ResponseEntity<List<ResponseMessageDTO>> getAllMessages() {
-        return ResponseEntity.ok(messageService.getAllMessages());
+        return ResponseEntity.ok(messageFacade.getAllMessages());
     }
+
     @PostMapping
-    public ResponseEntity<ResponseMessageDTO> createMessage(@RequestBody CreateMessageDTO messageDTO) {
-        return ResponseEntity.ok(messageService.createMessage(messageDTO));
+    public ResponseEntity<ResponseMessageDTO> createMessage(@Valid @RequestBody CreateMessageDTO messageDTO) {
+        return ResponseEntity.ok(messageFacade.createMessage(messageDTO));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ResponseMessageDTO> updateMessage(@PathVariable Long id, @RequestBody UpdateMessageDTO dto) {
-        return ResponseEntity.ok(messageService.updateMessage(id, dto));
+    public ResponseEntity<ResponseMessageDTO> updateMessage( @PathVariable Long id, @Valid @RequestBody UpdateMessageDTO dto) {
+        return ResponseEntity.ok(messageFacade.updateMessage(id, dto));
     }
+
     @GetMapping("/user/{userId}")
     public ResponseEntity<List<ResponseMessageDTO>> getMessagesByUserId(@PathVariable Long userId) {
-        return ResponseEntity.ok(messageService.getMessagesByUserId(userId));
+        return ResponseEntity.ok(messageFacade.getMessagesByUserId(userId));
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteMessage(@PathVariable Long id) {
-        messageService.deleteMessage(id);
+        messageFacade.deleteMessage(id);
         return ResponseEntity.noContent().build();
     }
 }

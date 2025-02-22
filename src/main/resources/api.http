@@ -1,0 +1,180 @@
+### !!! USERS  - Unsuccessful case - size of name (expectation 400)
+POST http://localhost:8080/api/v1/users
+Content-Type: application/json
+
+{
+  "name": "JohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohn",
+  "surname": "Doe",
+  "email": "john.doe@example.com",
+  "password": "1234fghj",
+  "sex": "MALE",
+  "userRole": "ADMIN_ROLE"
+}
+
+### Unsuccessful case - size of surname (expectation 400)
+POST http://localhost:8080/api/v1/users
+Content-Type: application/json
+
+{
+  "name": "John",
+  "surname": "DoeDoeDoeDoeDoeDoeDoeDoeDoeDoeDoeDoeDoeDoeDoeDoeDoeDoeDoeDoeDoeDoeDoeDoeDoeDoeDoeDoeDoeDoeDoeDoeDoeDoeDoeDoeDoeDoeDoeDoeDoeDoeDoeDoeDoeDoeDoeDoeDoeDoeDoeDoe",
+  "email": "john.doe@example.com",
+  "password": "1234fghj",
+  "sex": "MALE",
+  "userRole": "ADMIN_ROLE"
+}
+
+### Unsuccessful case - wrong writting of email (expectation 400)
+POST http://localhost:8080/api/v1/users
+Content-Type: application/json
+
+{
+  "name": "John",
+  "surname": "Doe",
+  "email": "john.doeexample.com",
+  "password": "1234fghj",
+  "sex": "MALE",
+  "userRole": "ADMIN_ROLE"
+}
+
+### Unsuccessful case -  size of password-less than suppose to be (expectation 400)
+POST http://localhost:8080/api/v1/users
+Content-Type: application/json
+
+{
+  "name": "John",
+  "surname": "Doe",
+  "email": "john.doe@example.com",
+  "password": "1234",
+  "sex": "MALE",
+  "userRole": "ADMIN_ROLE"
+}
+
+### Unsuccessful case -  size of password- more than suppose to be (expectation 400)
+POST http://localhost:8080/api/v1/users
+Content-Type: application/json
+
+{
+  "name": "John",
+  "surname": "Doe",
+  "email": "john.doe@example.com",
+  "password": "12341234123412341234123412341234",
+  "sex": "MALE",
+  "userRole": "ADMIN_ROLE"
+}
+
+### Unsuccessful case -  missing information of email (expectation 400)
+POST http://localhost:8080/api/v1/users
+Content-Type: application/json
+
+{
+  "name": "John",
+  "surname": "Doe",
+  "password": "1234123412",
+  "sex": "MALE",
+  "userRole": "ADMIN_ROLE"
+}
+
+### Unsuccessful case -  Require of non-exist id (expectation 404)
+GET http://localhost:8080/api/v1/users/9999
+
+
+### Unsuccessful case -  update user - wrong size of name (expectation 400)
+PUT http://localhost:8080/api/v1/users/1
+Content-Type: application/json
+
+{
+  "name": "JohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohn",
+  "surname": "Doe",
+  "email": "john.doe@example.com"
+}
+
+### Unsuccessful case -  update user - wrong size of surname (expectation 400)
+PUT http://localhost:8080/api/v1/users/1
+Content-Type: application/json
+
+{
+  "name": "John",
+  "surname": "DoeDoeDoeDoeDoeDoeDoeDoeDoeDoeDoeDoeDoeDoeDoeDoeDoeDoeDoeDoeDoeDoeDoeDoeDoeDoeDoeDoeDoeDoeDoeDoeDoeDoeDoeDoeDoeDoeDoeDoeDoeDoeDoeDoeDoeDoeDoeDoeDoeDoeDoeDoe",
+  "email": "john.doe@example.com"
+}
+
+### Unsuccessful case -  update user - wrong format of email (expectation 400)
+PUT http://localhost:8080/api/v1/users/1
+Content-Type: application/json
+
+{
+  "name": "John",
+  "surname": "Doe",
+  "email": "john.doeexample.com"
+}
+
+### Unsuccessful case -  update user - missing surname (expectation 400)
+PUT http://localhost:8080/api/v1/users/1
+Content-Type: application/json
+
+{
+  "name": "John",
+  "email": "john.doe@example.com"
+}
+
+### Unsuccessful case -  update user - non-exist id (expectation 404)
+PUT http://localhost:8080/api/v1/users/9999
+Content-Type: application/json
+
+{
+  "name": "John",
+  "surname": "Doe",
+  "email": "john.doe@example.com"
+}
+
+### Unsuccessful case -  delete user - Require of non-exist id (expectation 404)
+DELETE http://localhost:8080/api/v1/users/9999
+
+
+### !!! MESSAGES  - Unsuccessful case - size of text (expectation 400)
+POST http://localhost:8080/api/v1/messages
+Content-Type: application/json
+
+{
+  "text": "JohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohn",
+  "creatorId": 1,
+  "receiverId": 2
+}
+### Unsuccessful case - missing field (expectation 400)
+POST http://localhost:8080/api/v1/messages
+Content-Type: application/json
+
+{
+  "creatorId": 1,
+  "receiverId": 2
+}
+
+###  Unsuccessful case - update message - size of text (expectation 400)
+PUT http://localhost:8080/api/v1/messages/1
+Content-Type: application/json
+
+{
+  "text": "JohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohn"
+}
+
+###  Unsuccessful case - update message - text is null (expectation 400)
+PUT http://localhost:8080/api/v1/messages/1
+Content-Type: application/json
+
+{
+}
+
+###  Unsuccessful case - update message -  Non-exist id (expectation 400)
+PUT http://localhost:8080/api/v1/messages/9999
+Content-Type: application/json
+
+{
+  "text": "JohnJohnJohnJohnJohnJohnJohnJohnJ"
+}
+
+### Unsuccessful case - Non-exist id (expectation 404)
+GET http://localhost:8080/api/v1/messages/user/9999
+
+### Unsuccessful case - Non-exist id (expectation 404)
+DELETE http://localhost:8080/api/v1/messages/9999

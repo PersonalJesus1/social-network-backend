@@ -21,14 +21,9 @@ public class AuthController {
         this.userService = userService;
     }
 
-   /* @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody AuthRequest authRequest) {
-        String token = userService.authenticate(authRequest.getEmail(), authRequest.getPassword());
-        return ResponseEntity.ok(token);
-    }*/
    @PostMapping("/login")
    public ResponseEntity<Map<String, String>> login(@RequestBody AuthRequest authRequest) {
-       String token = userService.authenticate(authRequest.getEmail(), authRequest.getPassword());
+       String token = userService.authenticate(authRequest.email(), authRequest.password());
 
        // Оборачиваем токен в JSON
        Map<String, String> response = new HashMap<>();
@@ -38,4 +33,3 @@ public class AuthController {
    }
 
 }
-

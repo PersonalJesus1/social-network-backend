@@ -25,11 +25,11 @@ public class Like {
     @JoinColumn(name = "like_creator_user_id")
     private User creator;
 
-    private LocalDateTime likeDate;
+    @Column(nullable = false)
+    private LocalDateTime date;
 
     @PrePersist
     public void setDateBeforeInsert() {
-        this.likeDate = LocalDateTime.now();
+        this.date = LocalDateTime.now();
     }
-
 }

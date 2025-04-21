@@ -10,6 +10,8 @@ import jakarta.validation.ConstraintViolationException;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import jakarta.validation.Validator;
 
@@ -37,8 +39,9 @@ public class UserFacade {
         return mapToResponseDto(user);
     }
 
-    public List<ResponseUserDTO> getAllUsers() {
-        return userService.getAllUsers()
+    public List<ResponseUserDTO> getAllUsers(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return userService.getAllUsers(pageable)
                 .stream()
                 .map(this::mapToResponseDto)
                 .toList();
@@ -52,7 +55,6 @@ public class UserFacade {
     }
 
     public void deleteUser(Long id) {
-        userService.getUserById(id);
         userService.deleteUser(id);
     }
 

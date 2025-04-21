@@ -23,12 +23,13 @@ public class Post {
     @NotNull(message = "Text cannot be null")
     private String text;
 
-    private String picture;
-
+    @Column(nullable = false)
     private LocalDateTime date;
 
+    private String imagePath;
+
     @ManyToOne
-    @JoinColumn(name = "post_creator_user_id")
+    @JoinColumn(name = "user_id")
     private User creator;
 
     @OneToMany(mappedBy = "post", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
@@ -36,4 +37,11 @@ public class Post {
 
     @OneToMany(mappedBy = "post", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Comment> postCommentList;
+
+    @PrePersist
+    public void setDateBeforeInsert() {
+        if (this.date == null) {
+            this.date = LocalDateTime.now();
+        }
+    }
 }

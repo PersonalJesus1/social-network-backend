@@ -10,40 +10,172 @@
 			"name": "GET Requests",
 			"item": [
 				{
-					"name": "http://localhost:8080/api/v1/users/",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": "{{url}}/users"
-					},
-					"response": []
+					"name": "Users",
+					"item": [
+						{
+							"name": "http://localhost:8080/api/v1/users/",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": "{{url}}/users"
+							},
+							"response": []
+						},
+						{
+							"name": "http://localhost:8080/api/v1/users/{{userId}}",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": "{{url}}/users/{{userId}}"
+							},
+							"response": []
+						}
+					]
 				},
 				{
-					"name": "http://localhost:8080/api/v1/users/1",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": "{{url}}/users/1"
-					},
-					"response": []
+					"name": "Messages",
+					"item": [
+						{
+							"name": "http://localhost:8080/api/v1/messages/user/1",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": "{{url}}/messages/user/1"
+							},
+							"response": []
+						},
+						{
+							"name": "http://localhost:8080/api/v1/messages/",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": "{{url}}/messages"
+							},
+							"response": []
+						}
+					]
 				},
 				{
-					"name": "http://localhost:8080/api/v1/messages/user/1",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": "{{url}}/messages/user/1"
-					},
-					"response": []
+					"name": "Comments",
+					"item": [
+						{
+							"name": "http://localhost:8080/api/v1/comments/",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": "{{url}}/comments"
+							},
+							"response": []
+						},
+						{
+							"name": "http://localhost:8080/api/v1/comments/{{commentId}}",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": "{{url}}/comments/{{commentId}}"
+							},
+							"response": []
+						}
+					]
 				},
 				{
-					"name": "http://localhost:8080/api/v1/messages/user/1",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": "{{url}}/messages"
-					},
-					"response": []
+					"name": "Likes",
+					"item": [
+						{
+							"name": "http://localhost:8080/api/v1/likes/",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": "{{url}}/likes"
+							},
+							"response": []
+						},
+						{
+							"name": "http://localhost:8080/api/v1/likes/{{likeId}}",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": "{{url}}/likes/{{likeId}}"
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Posts",
+					"item": [
+						{
+							"name": "http://localhost:8080/api/v1/posts/",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": "{{url}}/posts"
+							},
+							"response": []
+						},
+						{
+							"name": "http://localhost:8080/api/v1/posts/{{postId}}",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": "{{url}}/posts/{{postId}}"
+							},
+							"response": []
+						},
+						{
+							"name": "http://localhost:8080/api/v1/posts/user/{{messageUserId}}",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": "{{url}}/posts/user/1"
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Subscriptions",
+					"item": [
+						{
+							"name": "http://localhost:8080/api/v1/subscriptions/1/subscriptions",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": "{{url}}/subscriptions/1/subscriptions"
+							},
+							"response": []
+						},
+						{
+							"name": "http://localhost:8080/api/v1/subscriptions/1/subscriptions/count",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": "{{url}}/subscriptions/1/subscriptions/count"
+							},
+							"response": []
+						},
+						{
+							"name": "http://localhost:8080/api/v1/subscriptions/1/followers",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": "{{url}}/subscriptions/1/followers"
+							},
+							"response": []
+						}
+					]
 				}
 			]
 		},
@@ -52,6 +184,23 @@
 			"item": [
 				{
 					"name": "http://localhost:8080/api/v1/users",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Сохранение ID\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    console.log(\"Ответ:\", jsonData); // Лог в консоль\r",
+									"    pm.environment.set(\"userId\", jsonData.userId);\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
 					"request": {
 						"method": "POST",
 						"header": [
@@ -63,19 +212,35 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"userName\": \"John\",\r\n  \"userSurname\": \"Doe\",\r\n  \"userEmail\": \"john.doe@example.com\",\r\n  \"userPassword\": \"password123\",\r\n  \"sex\": \"MALE\"\r\n}\r\n\r\n",
+							"raw": "{\r\n    \"name\": \"Test\",\r\n    \"surname\": \"Test\",\r\n    \"email\": \"test@example.com\",\r\n    \"password\": \"test1234\",\r\n    \"sex\": \"MALE\",\r\n    \"role\": \"USER\"\r\n}\r\n",
 							"options": {
 								"raw": {
 									"language": "json"
 								}
 							}
 						},
-						"url": "{{url}}/users"
+						"url": "http://127.0.0.1:8080/api/v1/users"
 					},
 					"response": []
 				},
 				{
 					"name": "http://localhost:8080/api/v1/messages",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Сохранение ID\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    console.log(\"Ответ:\", jsonData); // Лог в консоль\r",
+									"    pm.environment.set(\"messageId\", jsonData.id);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
 					"request": {
 						"auth": {
 							"type": "noauth"
@@ -84,7 +249,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"creatorId\": 1,\r\n  \"receiverId\": 2,\r\n  \"messageText\": \"Hello, how are you?\"\r\n}\r\n",
+							"raw": "{\r\n  \"text\": \"Hello, how are you?\",\r\n  \"creatorId\": 1,\r\n  \"receiverId\": 2\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -94,6 +259,166 @@
 						"url": "{{url}}/messages"
 					},
 					"response": []
+				},
+				{
+					"name": "http://localhost:8080/api/v1/subscriptions",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"followerId\": 2,\r\n  \"followingId\": 3\r\n}\r\n    ",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{url}}/subscriptions/subscribe"
+					},
+					"response": []
+				},
+				{
+					"name": "http://localhost:8080/api/v1/posts?userId=1",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Сохранение ID\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    console.log(\"Ответ:\", jsonData); // Лог в консоль\r",
+									"    pm.environment.set(\"postId\", jsonData.postId);\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"text\": \"This is post text\",\r\n  \"pictureBase64\": \"iVBORw0KGgoAAAANSUhEUgAAAAUA\"   \r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/posts?userId=1",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"posts"
+							],
+							"query": [
+								{
+									"key": "userId",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "http://localhost:8080/api/v1/likes",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Сохранение ID\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    console.log(\"Ответ:\", jsonData); // Лог в консоль\r",
+									"    pm.environment.set(\"likeId\", jsonData.likeId);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"postId\": 1,\r\n  \"userId\": 1\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{url}}/likes"
+					},
+					"response": []
+				},
+				{
+					"name": "http://localhost:8080/api/v1/comments",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Сохранение ID\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    console.log(\"Ответ:\", jsonData); // Лог в консоль\r",
+									"    pm.environment.set(\"commentId\", jsonData.commentId);\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n   \"postId\": {{postId}},\r\n   \"userId\": 1,\r\n   \"text\": \"This is comment text\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{url}}/comments"
+					},
+					"response": []
 				}
 			]
 		},
@@ -101,7 +426,7 @@
 			"name": "PUT Requests",
 			"item": [
 				{
-					"name": "http://localhost:8080/api/v1/users/1",
+					"name": "http://localhost:8080/api/v1/users/{{userId}}",
 					"request": {
 						"auth": {
 							"type": "noauth"
@@ -110,19 +435,19 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"userName\": \"John\",\r\n  \"userSurname\": \"Doe\",\r\n  \"userEmail\": \"john.doe@example.com\"  \r\n}\r\n\r\n",
+							"raw": "{\r\n   \"name\": \"TestUpdated\",\r\n   \"surname\": \"TestUpdated\",\r\n   \"email\": \"test.updated@example.com\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
 								}
 							}
 						},
-						"url": "{{url}}/users/1"
+						"url": "{{url}}/users/{{userId}}"
 					},
 					"response": []
 				},
 				{
-					"name": "http://localhost:8080/api/v1/messages/1",
+					"name": "http://localhost:8080/api/v1/messages/{{messageId}}",
 					"request": {
 						"auth": {
 							"type": "noauth"
@@ -131,14 +456,77 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"messageText\": \"Updated message text\"\r\n}\r\n",
+							"raw": "{\r\n   \"text\": \"Hello, how are you? Updated\"\r\n}\r\n",
 							"options": {
 								"raw": {
 									"language": "json"
 								}
 							}
 						},
-						"url": "{{url}}/messages/1"
+						"url": "{{url}}/messages/{{messageId}}"
+					},
+					"response": []
+				},
+				{
+					"name": "http://localhost:8080/api/v1/likes/{{likeId}}",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{url}}/likes/{{likeId}}"
+					},
+					"response": []
+				},
+				{
+					"name": "http://localhost:8080/api/v1/posts/{{postId}}",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"text\": \"This is post text Updated\",\r\n  \"pictureBase64\": \"iVBORw0KGgoAAAANSUhEUgAAAAUA\"   \r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{url}}/posts/{{postId}}"
+					},
+					"response": []
+				},
+				{
+					"name": "http://localhost:8080/api/v1/comments/{{commentId}}",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n   \"text\": \"This is comment text. Updated\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{url}}/comments/{{commentId}}"
 					},
 					"response": []
 				}
@@ -148,26 +536,83 @@
 			"name": "DELETE Requests",
 			"item": [
 				{
-					"name": "http://localhost:8080/api/v1/users/1",
+					"name": "http://localhost:8080/api/v1/users/{{userId}}",
 					"request": {
 						"auth": {
 							"type": "noauth"
 						},
 						"method": "DELETE",
 						"header": [],
-						"url": "{{url}}/users/1"
+						"url": "{{url}}/users/{{userId}}"
 					},
 					"response": []
 				},
 				{
-					"name": "http://localhost:8080/api/v1/messages/1",
+					"name": "http://localhost:8080/api/v1/messages/{{messageId}}",
 					"request": {
 						"auth": {
 							"type": "noauth"
 						},
 						"method": "DELETE",
 						"header": [],
-						"url": "{{url}}/messages/1"
+						"url": "{{url}}/messages/{{messageId}}"
+					},
+					"response": []
+				},
+				{
+					"name": "http://localhost:8080/api/v1/posts/{{postsId}}",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": "{{url}}/posts/{{postId}}"
+					},
+					"response": []
+				},
+				{
+					"name": "http://localhost:8080/api/v1/comments/{{commentId}}",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": "{{url}}/comments/{{commentId}}"
+					},
+					"response": []
+				},
+				{
+					"name": "http://localhost:8080/api/v1/subscriptions",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"followerId\": 2,\r\n  \"followingId\": 3\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{url}}/subscriptions/unsubscribe"
+					},
+					"response": []
+				},
+				{
+					"name": "http://localhost:8080/api/v1/likes/{{likeId}}",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": "{{url}}/likes/{{likeId}}"
 					},
 					"response": []
 				}

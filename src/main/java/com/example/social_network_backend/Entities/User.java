@@ -11,7 +11,7 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
-@Table(name = "newtworkuser")
+@Table(name = "networkuser", schema = "public")
 public class User {
 
     @Id
@@ -22,13 +22,15 @@ public class User {
 
     private String surname;
 
+    @Enumerated(EnumType.STRING)
     private UserSex sex;
 
     private String password;
 
+    @Enumerated(EnumType.STRING)
     private UserRole role;
 
-    @Column(nullable = false, unique = true)
+    @Column(name = "email", nullable = false, unique = true)
     private String email;
 
     @ManyToMany

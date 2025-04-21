@@ -20,6 +20,7 @@ public class Message {
 
     private String text;
 
+    @Column(nullable = false)
     private LocalDateTime date;
 
     @ManyToOne

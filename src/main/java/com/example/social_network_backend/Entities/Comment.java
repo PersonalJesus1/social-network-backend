@@ -23,6 +23,7 @@ public class Comment {
     @NotNull(message = "Text cannot be null")
     private String text;
 
+    @Column(nullable = false)
     private LocalDateTime date;
 
     @ManyToOne

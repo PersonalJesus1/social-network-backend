@@ -8,7 +8,10 @@ import com.example.social_network_backend.Repositories.MessageRepository;
 import com.example.social_network_backend.Repositories.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -19,33 +22,38 @@ public class MessageService {
     private final MessageRepository messageRepository;
     private final UserRepository userRepository;
 
+    @Transactional
     public Message createMessage(CreateMessageDTO dto, User creator, User receiver) {
         Message message = mapToEntity(dto, creator, receiver);
         messageRepository.save(message);
         return message;
     }
 
-    public List<Message> getAllMessages() {
-        return messageRepository.findAll().stream().toList();
+    public Page<Message> getAllMessages(Pageable pageable) {
+        return messageRepository.findAll(pageable);
     }
 
+    @Transactional
     public Message updateMessage(Long id, UpdateMessageDTO dto) {
-    Message message = messageRepository.findById(id)
-            .orElseThrow(() -> new EntityNotFoundException("Message with ID " + id + " not found"));
-
-    message.setText(dto.text());
-    return messageRepository.save(message);
-}
-
-    public void deleteMessage(Long id) {
         Message message = messageRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Message with ID " + id + " not found"));
-        messageRepository.delete(message);
+        message.setText(dto.text());
+        return messageRepository.save(message);
+    }
+
+    @Transactional
+    public void deleteMessage(Long id) {
+        if (!messageRepository.existsById(id)) {
+            throw new EntityNotFoundException("Message with ID " + id + " not found");
+        }
+        messageRepository.deleteById(id);
     }
 
     public List<Message> getMessagesByUserId(Long id) {
-        userRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Message with ID " + id + " not found"));
-        return messageRepository.findById(id).stream().toList();
+        userRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Message with ID " + id + " not found"));
+
+        return messageRepository.findByCreatorId(id);
     }
 
     private Message mapToEntity(CreateMessageDTO dto, User creator, User receiver) {

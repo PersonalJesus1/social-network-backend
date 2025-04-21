@@ -25,11 +25,10 @@ public class AuthController {
    public ResponseEntity<Map<String, String>> login(@RequestBody AuthRequest authRequest) {
        String token = userService.authenticate(authRequest.email(), authRequest.password());
 
-       // Оборачиваем токен в JSON
+       // Wrap token into JSON
        Map<String, String> response = new HashMap<>();
        response.put("token", token);
 
        return ResponseEntity.ok(response);
    }
-
 }

@@ -13,6 +13,8 @@ import jakarta.validation.Validator;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -35,15 +37,15 @@ public class MessageFacade {
         return mapToResponseDto(message);
     }
 
-    public List<ResponseMessageDTO> getAllMessages() {
-        return messageService.getAllMessages()
+    public List<ResponseMessageDTO> getAllMessages(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return messageService.getAllMessages(pageable)
                 .stream()
                 .map(this::mapToResponseDto)
                 .toList();
     }
 
     public ResponseMessageDTO updateMessage(Long id, UpdateMessageDTO dto) {
-        userService.getUserById(id);
         validate(dto);
         Message message = messageService.updateMessage(id, dto);
         return mapToResponseDto(message);
@@ -68,6 +70,6 @@ public class MessageFacade {
     }
 
     private ResponseMessageDTO mapToResponseDto(Message message) {
-        return new ResponseMessageDTO(message.getText(), message.getDate(), message.getCreator().getName(), message.getReceiver().getName());
+        return new ResponseMessageDTO(message.getId(), message.getText(), message.getDate(), message.getCreator().getName(), message.getReceiver().getName());
     }
 }

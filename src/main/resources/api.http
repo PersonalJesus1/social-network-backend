@@ -1,4 +1,5 @@
-### !!! USERS  - Unsuccessful case - size of name (expectation 400)
+# !!! USERS
+### Unsuccessful case - size of surname (expectation 400)
 POST http://localhost:8080/api/v1/users
 Content-Type: application/json
 
@@ -8,7 +9,7 @@ Content-Type: application/json
   "email": "john.doe@example.com",
   "password": "1234fghj",
   "sex": "MALE",
-  "userRole": "ADMIN_ROLE"
+  "role": "ADMIN"
 }
 
 ### Unsuccessful case - size of surname (expectation 400)
@@ -21,7 +22,7 @@ Content-Type: application/json
   "email": "john.doe@example.com",
   "password": "1234fghj",
   "sex": "MALE",
-  "userRole": "ADMIN_ROLE"
+  "role": "ADMIN"
 }
 
 ### Unsuccessful case - wrong writting of email (expectation 400)
@@ -34,7 +35,7 @@ Content-Type: application/json
   "email": "john.doeexample.com",
   "password": "1234fghj",
   "sex": "MALE",
-  "userRole": "ADMIN_ROLE"
+  "role": "ADMIN"
 }
 
 ### Unsuccessful case -  size of password-less than suppose to be (expectation 400)
@@ -47,7 +48,7 @@ Content-Type: application/json
   "email": "john.doe@example.com",
   "password": "1234",
   "sex": "MALE",
-  "userRole": "ADMIN_ROLE"
+  "role": "ADMIN"
 }
 
 ### Unsuccessful case -  size of password- more than suppose to be (expectation 400)
@@ -60,7 +61,7 @@ Content-Type: application/json
   "email": "john.doe@example.com",
   "password": "12341234123412341234123412341234",
   "sex": "MALE",
-  "userRole": "ADMIN_ROLE"
+  "role": "ADMIN"
 }
 
 ### Unsuccessful case -  missing information of email (expectation 400)
@@ -72,12 +73,14 @@ Content-Type: application/json
   "surname": "Doe",
   "password": "1234123412",
   "sex": "MALE",
-  "userRole": "ADMIN_ROLE"
+  "role": "ADMIN"
 }
 
 ### Unsuccessful case -  Require of non-exist id (expectation 404)
 GET http://localhost:8080/api/v1/users/9999
 
+### Unsuccessful case -  Invalid pagination parameters (expectation 400 Bad Request)
+GET http://localhost:8080/api/v1/users?page=-1&size=0
 
 ### Unsuccessful case -  update user - wrong size of name (expectation 400)
 PUT http://localhost:8080/api/v1/users/1
@@ -132,7 +135,8 @@ Content-Type: application/json
 DELETE http://localhost:8080/api/v1/users/9999
 
 
-### !!! MESSAGES  - Unsuccessful case - size of text (expectation 400)
+# !!! MESSAGES
+### Unsuccessful case - size of text (expectation 400)
 POST http://localhost:8080/api/v1/messages
 Content-Type: application/json
 
@@ -141,12 +145,23 @@ Content-Type: application/json
   "creatorId": 1,
   "receiverId": 2
 }
+
 ### Unsuccessful case - missing field (expectation 400)
 POST http://localhost:8080/api/v1/messages
 Content-Type: application/json
 
 {
   "creatorId": 1,
+  "receiverId": 2
+}
+
+### Create Message - creator not found (expect 404)
+POST http://localhost:8080/api/v1/messages
+Content-Type: application/json
+
+{
+  "text": "Hi!",
+  "creatorId": 9999,
   "receiverId": 2
 }
 
@@ -165,7 +180,7 @@ Content-Type: application/json
 {
 }
 
-###  Unsuccessful case - update message -  Non-exist id (expectation 400)
+###  Unsuccessful case - update message -  Non-exist id (expectation 404)
 PUT http://localhost:8080/api/v1/messages/9999
 Content-Type: application/json
 
@@ -173,8 +188,220 @@ Content-Type: application/json
   "text": "JohnJohnJohnJohnJohnJohnJohnJohnJ"
 }
 
+###  Unsuccessful case - update message -  Non-exist id (expectation 404)
+PUT http://localhost:8080/api/v1/messages/9999
+Content-Type: application/json
+
+{
+  "text": "dd"
+}
+
 ### Unsuccessful case - Non-exist id (expectation 404)
 GET http://localhost:8080/api/v1/messages/user/9999
 
+### Unsuccessful case -  Invalid pagination parameters (expectation 400 Bad Request)
+GET http://localhost:8080/api/v1/messages?page=-1&size=0
+
 ### Unsuccessful case - Non-exist id (expectation 404)
 DELETE http://localhost:8080/api/v1/messages/9999
+
+
+# !!! COMMENTS
+### Unsuccessful case - null text (expectation 400 Bad Request)
+POST http://localhost:8080/api/v1/comments?user=1
+Content-Type: application/json
+
+{
+  "text": null,
+  "postId": 1,
+  "userId": 2
+}
+
+### Unsuccessful case - over limit text (expectation 400 Bad Request)
+POST http://localhost:8080/api/v1/comments
+Content-Type: application/json
+
+{
+  "text": "JohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohn"
+  "postId": 1,
+  "userId": 2
+}
+
+### Unsuccessful case - update comment without text (expectation 400 Bad Request)
+PUT http://localhost:8080/api/v1/comments/1
+Content-Type: application/json
+
+{
+  "text": ""
+}
+
+### Unsuccessful case - update non-exist id comment (expectation 404 Bad Request)
+PUT http://localhost:8080/api/v1/comments/99999
+Content-Type: application/json
+
+{
+  "text": "Updated comment"
+}
+
+### Unsuccessful case - get non-exist id comment (expectation 404 Not Found)
+GET http://localhost:8080/api/v1/comments/99999
+
+### Unsuccessful case - Invalid pagination parameters (expectation 400 Bad Request)
+GET http://localhost:8080/api/v1/comments?page=-1&size=0
+
+### !!! Unsuccessful case - delete non-exist id comment (expectation 404 Not Found)
+DELETE http://localhost:8080/api/v1/comments/99999
+
+
+# !!! POSTS
+### Unsuccessful case -Create post — null text (400 Bad Request)
+POST http://localhost:8080/api/v1/posts?userId=1
+Content-Type: application/json
+
+{
+  "text": "",
+  "pictureBase64": "images/test.jpg"
+}
+
+### Unsuccessful case - Create post — missing userId param (400 Bad Request)
+POST http://localhost:8080/api/v1/posts
+Content-Type: application/json
+
+{
+  "text": "Test post",
+  "imagePath": "images/test.jpg"
+}
+
+### Unsuccessful case - Create post — text too long (400 Bad Request)
+POST http://localhost:8080/api/v1/posts?userId=1
+Content-Type: application/json
+
+{
+  "text": "JohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohn",
+  "imagePath": "images/test.jpg"
+}
+
+### Unsuccessful case - Get post by invalid id (404 Not Found)
+GET http://localhost:8080/api/v1/posts/99999
+
+### Unsuccessful case - Update post — empty text (400 Bad Request)
+PUT http://localhost:8080/api/v1/posts/1
+Content-Type: application/json
+
+{
+  "text": ""
+}
+
+### Unsuccessful case -  Update post — text too long (400 Bad Request)
+PUT http://localhost:8080/api/v1/posts/1
+Content-Type: application/json
+
+{
+  "text": "JohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohn"
+}
+
+### Unsuccessful case -  Delete non-existent post (404 Not Found)
+DELETE http://localhost:8080/api/v1/posts/99999
+
+### Unsuccessful case -  Get user posts — invalid pagination (400 Bad Request)
+GET http://localhost:8080/api/v1/posts/user/1?page=-1&size=0
+
+
+
+# !!! LIKES
+### Unsuccessful case -  Get user posts — invalid pagination (400 Bad Request)
+POST http://localhost:8080/api/v1/likes
+Content-Type: application/json
+
+{
+  "userId": 0,
+  "postId": null
+}
+
+### Unsuccessful case - Get non-exist like id (404 Not Found)
+GET http://localhost:8080/api/v1/likes/999999
+
+### Unsuccessful case - Get likes — invalid pagination (400 Bad Request)
+GET http://localhost:8080/api/v1/likes?page=-1&size=10
+
+### Unsuccessful case - Update non-exist like (404 Not Found)
+PUT http://localhost:8080/api/v1/likes/99999
+
+### Unsuccessful case - create existed like (409 Conflict)
+POST http://localhost:8080/api/v1/likes
+Content-Type: application/json
+
+{
+  "userId": 1,
+  "postId": 1
+}
+
+### Unsuccessful case - Delete non-exist like (404 Not Found)
+DELETE http://localhost:8080/api/v1/likes/99999
+
+
+
+# !!! SUBSCRIPTIONS
+### Unsuccessful case -empty body (400 Bad Request)
+POST http://localhost:8080/api/v1/subscriptions/subscribe
+Content-Type: application/json
+
+{
+}
+
+### Unsuccessful case - Invalid subscribe request - wrong types (400 Bad Request)
+POST http://localhost:8080/api/v1/subscriptions/subscribe
+Content-Type: application/json
+
+{
+  "followingId": "abc",
+  "followerId": null
+}
+
+###  Unsuccessful case - Conflict - Already subscribed (409 Conflict)
+POST http://localhost:8080/api/v1/subscriptions/subscribe
+Content-Type: application/json
+
+{
+  "followerId": 1,
+  "followingId": 3
+}
+
+###  Unsuccessful case - Conflict - Already unsubscribed (409 Conflict)
+DELETE http://localhost:8080/api/v1/subscriptions/unsubscribe
+Content-Type: application/json
+
+{
+  "followerId": 1,
+  "followingId": 2
+}
+
+###  Unsuccessful case - Non-exist id (404 Not found)
+DELETE http://localhost:8080/api/v1/subscriptions/unsubscribe
+Content-Type: application/json
+
+{
+  "followerId": 9999,
+  "followingId": 2
+}
+
+###  Unsuccessful case - Null id (400 Bad Request)
+DELETE http://localhost:8080/api/v1/subscriptions/unsubscribe
+Content-Type: application/json
+
+{
+  "followerId": null,
+  "followingId": 2
+}
+
+###  Unsuccessful case - Non-exist id (404 Not found)
+GET http://localhost:8080/api/v1/subscriptions/9999/subscriptions
+
+###  Unsuccessful case - Non-exist id (404 Not found)
+GET http://localhost:8080/api/v1/subscriptions/9999/followers
+
+###  Unsuccessful case - Non-exist id (404 Not found)
+GET http://localhost:8080/api/v1/subscriptions/9999/subscriptions/count
+
+###  Unsuccessful case - Non-exist id (404 Not found)
+GET http://localhost:8080/api/v1/subscriptions/9999/followers/count

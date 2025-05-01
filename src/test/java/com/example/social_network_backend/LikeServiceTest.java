@@ -36,17 +36,10 @@ public class LikeServiceTest {
     @Mock
     private LikeRepository likeRepository;
 
-    @Mock
-    private PostRepository postRepository;
-
-    @Mock
-    private UserRepository userRepository;
-
     @InjectMocks
     private LikeService likeService;
 
     private Like like;
-    private CreateLikeDTO createLikeDTO;
     private User user;
     private Post post;
 
@@ -62,23 +55,20 @@ public class LikeServiceTest {
         like.setId(1L);
         like.setPost(post);
         like.setCreator(user);
-        like.setDate(LocalDateTime.now());
+        like.setCreatedDate(LocalDateTime.now());
 
-        createLikeDTO = new CreateLikeDTO(1L, 1L);
     }
 
     @Test
     void createLike_Success() {
-        when(postRepository.findById(1L)).thenReturn(Optional.of(post));
-        when(userRepository.findById(1L)).thenReturn(Optional.of(user));
         when(likeRepository.save(any(Like.class))).thenReturn(like);
 
-        Like createdLike = likeService.createLike(createLikeDTO);
+        Like createdLike = likeService.createLike(like);
 
         assertNotNull(createdLike);
         assertEquals(like.getPost(), createdLike.getPost());
         assertEquals(like.getCreator(), createdLike.getCreator());
-        verify(likeRepository, times(1)).save(any(Like.class));
+        verify(likeRepository).save(any(Like.class));
     }
 
     @Test
@@ -109,24 +99,6 @@ public class LikeServiceTest {
         when(likeRepository.findById(1L)).thenReturn(Optional.empty());
 
         assertThrows(EntityNotFoundException.class, () -> likeService.getLikeById(1L));
-    }
-
-    @Test
-    void updateLike_Success() {
-        when(likeRepository.findById(1L)).thenReturn(Optional.of(like));
-        when(likeRepository.save(any(Like.class))).thenReturn(like);
-        Like like = likeRepository.findById(1L).get();
-        Like updatedLike = likeService.updateLike(1L);
-
-        assertNotNull(updatedLike);
-        assertEquals(like.getDate(), updatedLike.getDate());
-    }
-
-    @Test
-    void updateLike_ThrowsException_WhenNotFound() {
-        when(likeRepository.findById(1L)).thenReturn(Optional.empty());
-
-        assertThrows(EntityNotFoundException.class, () -> likeService.updateLike(1L));
     }
 
     @Test

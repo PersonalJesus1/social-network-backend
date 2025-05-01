@@ -33,13 +33,8 @@ public class LikeController {
 
     @GetMapping
     public ResponseEntity<List<ResponseLikeDTO>> getAllLikes(@RequestParam(defaultValue = "0") @Min(0) int page,
-                                                             @RequestParam(defaultValue = "10")@Min(1) int size) {
+                                                             @RequestParam(defaultValue = "10") @Min(1) int size) {
         return ResponseEntity.ok(likeFacade.getAllLikes(page, size));
-    }
-
-    @PutMapping("/{id}")
-    public ResponseEntity<ResponseLikeDTO> updateLike( @PathVariable Long id) {
-        return ResponseEntity.ok(likeFacade.updateLike(id));
     }
 
     @DeleteMapping("/{id}")

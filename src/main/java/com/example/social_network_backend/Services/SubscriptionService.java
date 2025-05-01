@@ -1,6 +1,5 @@
 package com.example.social_network_backend.Services;
 
-import com.example.social_network_backend.DTO.SubscriptionDTO;
 import com.example.social_network_backend.Entities.Subscription;
 import com.example.social_network_backend.Entities.User;
 import com.example.social_network_backend.Exceptions.SubscriptionWasDeletedException;
@@ -22,19 +21,20 @@ public class SubscriptionService {
     private final UserRepository userRepository;
 
     @Transactional
-    public void subscribe(SubscriptionDTO dto) {
-        Subscription subscription = mapToEntity(dto);
+    public void subscribe(Subscription subscription) {
+        User follower = userRepository.findById(subscription.getFollower().getId())
+                .orElseThrow(() -> new EntityNotFoundException("Follower not found"));
+        User following = userRepository.findById(subscription.getFollowing().getId())
+                .orElseThrow(() -> new EntityNotFoundException("Following not found"));
 
-        if (subscriptionRepository.existsByFollowerIdAndFollowingId(
-                subscription.getFollower().getId(), subscription.getFollowing().getId())) {
+        if (subscriptionRepository.existsByFollowerIdAndFollowingId(follower.getId(), following.getId())) {
             throw new SubscriptionExistsException("Already subscribed");
         }
         subscriptionRepository.save(subscription);
     }
 
     @Transactional
-    public void unsubscribe(SubscriptionDTO dto) {
-        Subscription subscription = mapToEntity(dto);
+    public void unsubscribe(Subscription subscription) {
         if (!subscriptionRepository.existsByFollowerIdAndFollowingId(subscription.getFollower().getId(), subscription.getFollowing().getId())) {
             throw new SubscriptionWasDeletedException("Already unsubscribed");
         }
@@ -67,26 +67,5 @@ public class SubscriptionService {
             throw new EntityNotFoundException("User not found");
         }
         return subscriptionRepository.findAllByFollowerId(userId).size();
-    }
-
-    private Subscription mapToEntity(SubscriptionDTO dto) {
-        Subscription subscription = new Subscription();
-        System.out.println("Проверяем, какие пользователи есть в userRepository:");
-        userRepository.findAll().forEach(user ->
-                System.out.println("User: ID = " + user.getId() + ", Email = " + user.getEmail())
-        );
-        User following = userRepository.findById(dto.followingId())
-                .orElseThrow(() -> {
-                    System.out.println("Не найден user с ID = " + dto.followingId());
-                    return new EntityNotFoundException("Following user not found");
-                });
-        User follower = userRepository.findById(dto.followerId())
-                .orElseThrow(() -> {
-                    System.out.println("Не найден user с ID = " + dto.followerId());
-                    return new EntityNotFoundException("Follower user not found");
-                });
-        subscription.setFollower(follower);
-        subscription.setFollowing(following);
-        return subscription;
     }
 }

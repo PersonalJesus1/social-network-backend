@@ -11,7 +11,7 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
-@Table(name = "networkuser", schema = "public")
+@Table(name = "networkuser")
 public class User {
 
     @Id

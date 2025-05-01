@@ -2,7 +2,9 @@ package com.example.social_network_backend.Facades;
 
 import com.example.social_network_backend.DTO.Post.CreatePostDTO;
 import com.example.social_network_backend.DTO.Post.ResponsePostDTO;
+import com.example.social_network_backend.DTO.Post.ResponseUpdatedPostDTO;
 import com.example.social_network_backend.DTO.Post.UpdatePostDTO;
+import com.example.social_network_backend.Entities.Image;
 import com.example.social_network_backend.Entities.Post;
 import com.example.social_network_backend.Repositories.UserRepository;
 import com.example.social_network_backend.Services.PostService;
@@ -29,12 +31,11 @@ public class PostFacade {
     private final Validator validator;
     private final UserRepository userRepository;
 
-    public ResponsePostDTO createPost(CreatePostDTO postDTO, Long userId) {
-        validate(postDTO); // сначала валидация текста
-        Post post = postService.createPost(postDTO, userId); // проверка user уже здесь
+    public ResponsePostDTO createPost(Long userId, CreatePostDTO dto) {
+        validate(dto);
+        Post post = postService.createPost(userId, mapToEntity(dto));
         return mapToResponseDto(post);
     }
-
 
     public ResponsePostDTO getPostById(Long id) {
         Post post = postService.getPostById(id);
@@ -53,15 +54,15 @@ public class PostFacade {
         return postService.getUserPosts(userId, pageable).stream().map(post -> mapToResponseDto(post)).toList();
     }
 
-    public ResponsePostDTO updatePost(UpdatePostDTO dto, Long id) {
-        Post post = postService.getPostById(id);
+    public ResponseUpdatedPostDTO updatePost(Long id, UpdatePostDTO dto) {
         validate(dto);
-        postService.updatePost(dto, id);
-        return mapToResponseDto(post);
+        Post post = new Post();
+        post.setText(dto.text());
+        post.setImage(dto.image());
+        return mapToUpdatedResponseDto(postService.updatePost(id, post));
     }
 
     public void deletePost(Long id) {
-
         postService.deletePost(id);
     }
 
@@ -72,8 +73,34 @@ public class PostFacade {
         }
     }
 
+    private Post mapToEntity(CreatePostDTO dto) {
+        Post post = new Post();
+        post.setText(dto.text());
+        if (dto.base64Image() != null && !dto.base64Image().isEmpty()) {
+            Image image = new Image();
+            image.setImagePath(dto.base64Image());
+            post.setImage(image);
+        }
+        return post;
+    }
+
     private ResponsePostDTO mapToResponseDto(Post post) {
-        return new ResponsePostDTO(post.getId(), post.getText(), post.getImagePath(),
-                post.getDate(), post.getPostLikeList() != null ? post.getPostLikeList().size() : 0);
+        int likeCount = post.getLikes() != null && !post.getLikes().isEmpty() ? post.getLikes().size() : 0;
+        return new ResponsePostDTO(
+                post.getId(),
+                post.getText(),
+                post.getImage(),
+                post.getCreatedDate(),
+                likeCount);
+    }
+
+    private ResponseUpdatedPostDTO mapToUpdatedResponseDto(Post post) {
+        int likeCount = post.getLikes() != null && !post.getLikes().isEmpty() ? post.getLikes().size() : 0;
+        return new ResponseUpdatedPostDTO(
+                post.getId(),
+                post.getText(),
+                post.getImage(),
+                post.getUpdatedDate(),
+                likeCount);
     }
 }

@@ -1,7 +1,5 @@
 package com.example.social_network_backend;
 
-import com.example.social_network_backend.DTO.Comment.CreateCommentDTO;
-import com.example.social_network_backend.DTO.Comment.UpdateCommentDTO;
 import com.example.social_network_backend.Entities.Comment;
 import com.example.social_network_backend.Entities.Post;
 import com.example.social_network_backend.Entities.User;
@@ -42,8 +40,6 @@ class CommentServiceTest {
     private User user;
     private Post post;
     private Comment comment;
-    private CreateCommentDTO createCommentDTO;
-    private UpdateCommentDTO updateCommentDTO;
 
     @BeforeEach
     void setUp() { //before tests
@@ -60,15 +56,12 @@ class CommentServiceTest {
         post.setText("Initial post");
         post.setCreator(user);
 
-        createCommentDTO = new CreateCommentDTO("New comment", 1L, 1L);
-        updateCommentDTO = new UpdateCommentDTO("Updated comment");
     }
 
     @Test
     void createComment_Success() {
         when(commentRepository.save(any(Comment.class))).thenReturn(comment); //WHEN we use this method  in this case THEN RETURN what we prepared
-        when(postRepository.getPostById(1L)).thenReturn(post);
-        Comment createdComment = commentService.createComment(createCommentDTO);  //test method
+        Comment createdComment = commentService.createComment(comment);  //test method
 
         assertNotNull(createdComment);// should not be null
         verify(commentRepository).save(any(Comment.class));
@@ -108,23 +101,27 @@ class CommentServiceTest {
 
     @Test
     void updateComment_Success() {
-        when(commentRepository.findById(1L)).thenReturn(Optional.of(comment));
+        Comment newCommentData = new Comment(); //Comment with updating data
+        newCommentData.setText("Updated comment");
+
+        when(commentRepository.findById(1L)).thenReturn(Optional.of(comment)); //before updating-comment
         when(commentRepository.save(any(Comment.class))).thenReturn(comment);
 
-        Comment updatedComment = commentService.updateComment(1L, updateCommentDTO);
+        Comment updatedComment = commentService.updateComment(1L, newCommentData);
 
         assertNotNull(updatedComment);
-        assertEquals("Updated comment", updatedComment.getText());
+        assertEquals("Updated comment", comment.getText()); // check initial comment
         verify(commentRepository).findById(1L);
         verify(commentRepository).save(any(Comment.class));
     }
+
 
     @Test
     void updateComment_ThrowsException_WhenNotFound() {
         when(commentRepository.findById(1L)).thenReturn(Optional.empty());
 
-        assertThrows(EntityNotFoundException.class, () -> commentService.updateComment(1L, updateCommentDTO));
-        verify(commentRepository, times(1)).findById(1L);
+        assertThrows(EntityNotFoundException.class, () -> commentService.updateComment(1L, comment));
+        verify(commentRepository).findById(1L);
         verify(commentRepository, never()).save(any(Comment.class));
     }
 

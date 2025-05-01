@@ -1,7 +1,5 @@
 package com.example.social_network_backend.Services;
 
-import com.example.social_network_backend.DTO.User.CreateUserDTO;
-import com.example.social_network_backend.DTO.User.UpdateUserDTO;
 import com.example.social_network_backend.Entities.User;
 import com.example.social_network_backend.Repositories.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -20,9 +18,8 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
 
     @Transactional
-    public User createUser(CreateUserDTO dto) {
-        User user = mapToEntity(dto);
-        user.setPassword(passwordEncoder.encode(user.getPassword())); // Hash pass
+    public User createUser(User user) {
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         userRepository.save(user);
         return user;
     }
@@ -36,11 +33,11 @@ public class UserService {
     }
 
     @Transactional
-    public User updateUser(Long id, UpdateUserDTO dto) {
-        User user = userRepository.findById(id).orElseThrow(EntityNotFoundException::new);
-        user.setName(dto.name());
-        user.setSurname(dto.surname());
-        user.setEmail(dto.email());
+    public User updateUser(Long id, User user) {
+        User existedUser = userRepository.findById(id).orElseThrow(EntityNotFoundException::new);
+        existedUser.setName(user.getName());
+        existedUser.setSurname(user.getSurname());
+        existedUser.setEmail(user.getEmail());
         userRepository.save(user);
         return user;
     }
@@ -61,16 +58,5 @@ public class UserService {
         } else {
             throw new RuntimeException("Invalid credentials");
         }
-    }
-
-    private User mapToEntity(CreateUserDTO dto) {
-        User user = new User();
-        user.setName(dto.name());
-        user.setSurname(dto.surname());
-        user.setEmail(dto.email());
-        user.setPassword(passwordEncoder.encode(dto.password())); // Хешируем пароль
-        user.setSex(dto.sex());
-        user.setRole(dto.role());
-        return user;
     }
 }

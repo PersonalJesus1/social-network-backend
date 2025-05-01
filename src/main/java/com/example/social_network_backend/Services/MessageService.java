@@ -1,9 +1,6 @@
 package com.example.social_network_backend.Services;
 
-import com.example.social_network_backend.DTO.Message.CreateMessageDTO;
-import com.example.social_network_backend.DTO.Message.UpdateMessageDTO;
 import com.example.social_network_backend.Entities.Message;
-import com.example.social_network_backend.Entities.User;
 import com.example.social_network_backend.Repositories.MessageRepository;
 import com.example.social_network_backend.Repositories.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -23,8 +20,7 @@ public class MessageService {
     private final UserRepository userRepository;
 
     @Transactional
-    public Message createMessage(CreateMessageDTO dto, User creator, User receiver) {
-        Message message = mapToEntity(dto, creator, receiver);
+    public Message createMessage(Message message) {
         messageRepository.save(message);
         return message;
     }
@@ -34,11 +30,11 @@ public class MessageService {
     }
 
     @Transactional
-    public Message updateMessage(Long id, UpdateMessageDTO dto) {
-        Message message = messageRepository.findById(id)
+    public Message updateMessage(Long id, Message message) {
+        Message existedMessage = messageRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Message with ID " + id + " not found"));
-        message.setText(dto.text());
-        return messageRepository.save(message);
+        existedMessage.setText(message.getText());
+        return messageRepository.save(existedMessage);
     }
 
     @Transactional
@@ -52,15 +48,6 @@ public class MessageService {
     public List<Message> getMessagesByUserId(Long id) {
         userRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Message with ID " + id + " not found"));
-
         return messageRepository.findByCreatorId(id);
-    }
-
-    private Message mapToEntity(CreateMessageDTO dto, User creator, User receiver) {
-        Message message = new Message();
-        message.setCreator(creator);
-        message.setReceiver(receiver);
-        message.setText(dto.text());
-        return message;
     }
 }

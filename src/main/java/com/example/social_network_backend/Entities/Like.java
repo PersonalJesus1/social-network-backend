@@ -11,7 +11,6 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @NoArgsConstructor
-@Table(name = "user_like")
 public class Like {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,11 +24,17 @@ public class Like {
     @JoinColumn(name = "like_creator_user_id")
     private User creator;
 
-    @Column(nullable = false)
-    private LocalDateTime date;
+    private LocalDateTime createdDate;
+
+    private LocalDateTime updatedDate;
 
     @PrePersist
     public void setDateBeforeInsert() {
-        this.date = LocalDateTime.now();
+        this.createdDate = LocalDateTime.now();
+    }
+
+    @PreUpdate
+    public void setDateAfterUpdate() {
+        this.updatedDate = LocalDateTime.now();
     }
 }

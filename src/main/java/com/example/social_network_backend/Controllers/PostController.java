@@ -2,6 +2,7 @@ package com.example.social_network_backend.Controllers;
 
 import com.example.social_network_backend.DTO.Post.CreatePostDTO;
 import com.example.social_network_backend.DTO.Post.ResponsePostDTO;
+import com.example.social_network_backend.DTO.Post.ResponseUpdatedPostDTO;
 import com.example.social_network_backend.DTO.Post.UpdatePostDTO;
 import com.example.social_network_backend.Facades.PostFacade;
 import jakarta.validation.Valid;
@@ -25,7 +26,7 @@ public class PostController {
     @PostMapping
     public ResponseEntity<ResponsePostDTO> createPost(@Valid @RequestBody CreatePostDTO postDTO,
                                                       @RequestParam Long userId) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(postFacade.createPost(postDTO, userId));
+        return ResponseEntity.status(HttpStatus.CREATED).body(postFacade.createPost(userId, postDTO));
     }
 
     @GetMapping("/{id}")
@@ -47,8 +48,8 @@ public class PostController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ResponsePostDTO> updatePost(@PathVariable Long id, @Valid @RequestBody UpdatePostDTO dto) {
-        return ResponseEntity.ok(postFacade.updatePost(dto, id));
+    public ResponseEntity<ResponseUpdatedPostDTO> updatePost(@PathVariable Long id, @Valid @RequestBody UpdatePostDTO dto) {
+        return ResponseEntity.ok(postFacade.updatePost(id, dto));
     }
 
     @DeleteMapping("/{id}")

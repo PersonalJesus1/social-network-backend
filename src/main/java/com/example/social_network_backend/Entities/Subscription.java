@@ -9,7 +9,6 @@ import lombok.Setter;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "subscriptions")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -18,15 +17,18 @@ public class Subscription {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    private LocalDateTime createdDate;
 
     @ManyToOne
     @JoinColumn(name = "follower_id", nullable = false)
-    private User follower; // кто подписался
+    private User follower;
 
     @ManyToOne
     @JoinColumn(name = "following_id", nullable = false)
     private User following;
 
-    @Column(nullable = false)
-    private LocalDateTime createdAt = LocalDateTime.now();
+    @PrePersist
+    public void setDateBeforeInsert() {
+        this.createdDate = LocalDateTime.now();
+    }
 }

@@ -13,7 +13,6 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @NoArgsConstructor
-@Table(name = "comment")
 public class Comment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,8 +22,9 @@ public class Comment {
     @NotNull(message = "Text cannot be null")
     private String text;
 
-    @Column(nullable = false)
-    private LocalDateTime date;
+    private LocalDateTime createdDate;
+
+    private LocalDateTime updatedDate;
 
     @ManyToOne
     @JoinColumn(name = "post_id")
@@ -33,8 +33,14 @@ public class Comment {
     @ManyToOne
     @JoinColumn(name = "comment_creator_user_id")
     private User creator;
+
     @PrePersist
     public void setDateBeforeInsert() {
-        this.date = LocalDateTime.now();
+        this.createdDate = LocalDateTime.now();
+    }
+
+    @PreUpdate
+    public void setDateAfterUpdate() {
+        this.updatedDate = LocalDateTime.now();
     }
 }

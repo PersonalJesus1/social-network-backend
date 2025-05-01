@@ -14,7 +14,6 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
-@Table(name = "post")
 public class Post {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,25 +22,30 @@ public class Post {
     @NotNull(message = "Text cannot be null")
     private String text;
 
-    @Column(nullable = false)
-    private LocalDateTime date;
+    private LocalDateTime createdDate;
 
-    private String imagePath;
+    private LocalDateTime updatedDate;
+
+    @OneToOne(mappedBy = "post", cascade = CascadeType.ALL)
+    private Image image;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User creator;
 
-    @OneToMany(mappedBy = "post", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private List<Like> postLikeList;
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
+    private List<Like> likes;
 
-    @OneToMany(mappedBy = "post", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private List<Comment> postCommentList;
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
+    private List<Comment> comments;
 
     @PrePersist
     public void setDateBeforeInsert() {
-        if (this.date == null) {
-            this.date = LocalDateTime.now();
-        }
+        this.createdDate = LocalDateTime.now();
+    }
+
+    @PreUpdate
+    public void setDateAfterUpdate() {
+        this.updatedDate = LocalDateTime.now();
     }
 }

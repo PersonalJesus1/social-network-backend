@@ -11,7 +11,6 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @NoArgsConstructor
-@Table(name = "message")
 public class Message {
 
     @Id
@@ -20,8 +19,9 @@ public class Message {
 
     private String text;
 
-    @Column(nullable = false)
-    private LocalDateTime date;
+    private LocalDateTime createdDate;
+
+    private LocalDateTime updatedDate;
 
     @ManyToOne
     @JoinColumn(name = "message_creator_user_id")
@@ -32,10 +32,12 @@ public class Message {
     private User receiver;
 
     @PrePersist
+    public void setDateBeforeInsert() {
+        this.createdDate = LocalDateTime.now();
+    }
+
     @PreUpdate
-    public void setDateBeforeInsertOrUpdate() {
-        if (this.date == null) {
-            this.date = LocalDateTime.now();
-        }
+    public void setDateAfterUpdate() {
+        this.updatedDate = LocalDateTime.now();
     }
 }

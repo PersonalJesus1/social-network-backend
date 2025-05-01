@@ -2,7 +2,10 @@ package com.example.social_network_backend.Facades;
 
 import com.example.social_network_backend.DTO.SubscriptionDTO;
 import com.example.social_network_backend.Entities.Subscription;
+import com.example.social_network_backend.Entities.User;
+import com.example.social_network_backend.Repositories.UserRepository;
 import com.example.social_network_backend.Services.SubscriptionService;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Validator;
@@ -23,15 +26,16 @@ import java.util.Set;
 public class SubscriptionFacade {
     private final SubscriptionService subscriptionService;
     private final Validator validator;
+    private final UserRepository userRepository;
 
     public void subscribe(SubscriptionDTO dto) {
         validate(dto);
-        subscriptionService.subscribe(dto);
+        subscriptionService.subscribe(mapToEntity(dto));
     }
 
     public void unsubscribe(SubscriptionDTO dto) {
         validate(dto);
-        subscriptionService.unsubscribe(dto);
+        subscriptionService.unsubscribe(mapToEntity(dto));
     }
 
     public List<SubscriptionDTO> getUserSubscriptions(Long userId, int page, int size) {
@@ -61,5 +65,16 @@ public class SubscriptionFacade {
 
     private SubscriptionDTO mapToDto(Subscription subscription) {
         return new SubscriptionDTO(subscription.getFollower().getId(), subscription.getFollowing().getId());
+    }
+
+    private Subscription mapToEntity(SubscriptionDTO dto) {
+        Subscription subscription = new Subscription();
+        User following = userRepository.findById(dto.followingId())
+                .orElseThrow(() -> new EntityNotFoundException());
+        User follower = userRepository.findById(dto.followerId())
+                .orElseThrow(() -> new EntityNotFoundException());
+        subscription.setFollower(follower);
+        subscription.setFollowing(following);
+        return subscription;
     }
 }

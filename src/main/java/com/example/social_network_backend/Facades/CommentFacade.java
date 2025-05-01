@@ -2,8 +2,11 @@ package com.example.social_network_backend.Facades;
 
 import com.example.social_network_backend.DTO.Comment.CreateCommentDTO;
 import com.example.social_network_backend.DTO.Comment.ResponseCommentDTO;
+import com.example.social_network_backend.DTO.Comment.ResponseUpdatedCommentDTO;
 import com.example.social_network_backend.DTO.Comment.UpdateCommentDTO;
 import com.example.social_network_backend.Entities.Comment;
+import com.example.social_network_backend.Repositories.PostRepository;
+import com.example.social_network_backend.Repositories.UserRepository;
 import com.example.social_network_backend.Services.CommentService;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
@@ -25,11 +28,13 @@ import java.util.Set;
 public class CommentFacade {
 
     private final CommentService commentService;
+    private final PostRepository postRepository;
     private final Validator validator;
+    private final UserRepository userRepository;
 
-    public ResponseCommentDTO createComment(CreateCommentDTO commentDTO) {
-        validate(commentDTO);
-        Comment comment = commentService.createComment(commentDTO);
+    public ResponseCommentDTO createComment(CreateCommentDTO dto) {
+        validate(dto);
+        Comment comment = commentService.createComment(mapToEntity(dto));
         return mapToResponseDto(comment);
     }
 
@@ -46,12 +51,14 @@ public class CommentFacade {
                 .toList();
     }
 
-    public ResponseCommentDTO updateComment(Long id, UpdateCommentDTO dto) {
-        Comment comment = commentService.getCommentById(id);
+    public ResponseUpdatedCommentDTO updateComment(Long id, UpdateCommentDTO dto) {
         validate(dto);
-        commentService.updateComment(id, dto);
-        return mapToResponseDto(comment);
+        Comment comment = new Comment();
+        comment.setText(dto.text());
+        Comment updatedComment = commentService.updateComment(id, comment);
+        return mapToUpdatedResponseDto(updatedComment);
     }
+
 
     public void deleteComment(Long id) {
         commentService.deleteComment(id);
@@ -65,6 +72,18 @@ public class CommentFacade {
     }
 
     private ResponseCommentDTO mapToResponseDto(Comment comment) {
-        return new ResponseCommentDTO(comment.getId(), comment.getText(), comment.getDate());
+        return new ResponseCommentDTO(comment.getId(), comment.getText(), comment.getCreatedDate());
+    }
+
+    private ResponseUpdatedCommentDTO mapToUpdatedResponseDto(Comment comment) {
+        return new ResponseUpdatedCommentDTO(comment.getId(), comment.getText(), comment.getUpdatedDate());
+    }
+
+    private Comment mapToEntity(CreateCommentDTO dto) {
+        Comment comment = new Comment();
+        comment.setText(dto.text());
+        comment.setPost(postRepository.getPostById(dto.postId()));
+        comment.setCreator(userRepository.getById(dto.userId()));
+        return comment;
     }
 }

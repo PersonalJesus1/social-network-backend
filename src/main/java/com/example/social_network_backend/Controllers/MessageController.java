@@ -2,6 +2,7 @@ package com.example.social_network_backend.Controllers;
 
 import com.example.social_network_backend.DTO.Message.CreateMessageDTO;
 import com.example.social_network_backend.DTO.Message.ResponseMessageDTO;
+import com.example.social_network_backend.DTO.Message.ResponseUpdatedMessageDTO;
 import com.example.social_network_backend.DTO.Message.UpdateMessageDTO;
 import com.example.social_network_backend.Facades.MessageFacade;
 import jakarta.validation.Valid;
@@ -23,20 +24,19 @@ public class MessageController {
     private final MessageFacade messageFacade;
 
     @GetMapping
-    public ResponseEntity<List<ResponseMessageDTO>> getAllMessages(@RequestParam(defaultValue = "0") @Min(0)int page,
-                                                                   @RequestParam(defaultValue = "10") @Min(1)int size) {
+    public ResponseEntity<List<ResponseMessageDTO>> getAllMessages(@RequestParam(defaultValue = "0") @Min(0) int page,
+                                                                   @RequestParam(defaultValue = "10") @Min(1) int size) {
         return ResponseEntity.ok(messageFacade.getAllMessages(page, size));
     }
 
     @PostMapping
     public ResponseEntity<ResponseMessageDTO> createMessage(@Valid @RequestBody CreateMessageDTO messageDTO) {
-        System.out.println("🚀 Пришёл POST-запрос на создание сообщения");
         return ResponseEntity.status(HttpStatus.CREATED).body(messageFacade.createMessage(messageDTO));
 
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ResponseMessageDTO> updateMessage(@PathVariable Long id, @Valid @RequestBody UpdateMessageDTO dto) {
+    public ResponseEntity<ResponseUpdatedMessageDTO> updateMessage(@PathVariable Long id, @Valid @RequestBody UpdateMessageDTO dto) {
         return ResponseEntity.ok(messageFacade.updateMessage(id, dto));
     }
 

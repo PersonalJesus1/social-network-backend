@@ -5,6 +5,7 @@ import static org.mockito.Mockito.*;
 
 import com.example.social_network_backend.DTO.Message.CreateMessageDTO;
 import com.example.social_network_backend.DTO.Message.UpdateMessageDTO;
+import com.example.social_network_backend.Entities.Comment;
 import com.example.social_network_backend.Entities.Message;
 import com.example.social_network_backend.Entities.User;
 import com.example.social_network_backend.Repositories.MessageRepository;
@@ -39,8 +40,6 @@ class MessageServiceTest {
     private Message message;
     private User creator;
     private User receiver;
-    private CreateMessageDTO createMessageDTO;
-    private UpdateMessageDTO updateMessageDTO;
 
     @BeforeEach
     void setUp() {
@@ -55,19 +54,17 @@ class MessageServiceTest {
         message.setReceiver(receiver);
         message.setText("Hello");
 
-        createMessageDTO = new CreateMessageDTO("Hello", creator.getId(), receiver.getId());
-        updateMessageDTO = new UpdateMessageDTO("Updated text");
     }
 
     @Test
     void createMessage_Success() {
         when(messageRepository.save(any(Message.class))).thenReturn(message);
 
-        Message createdMessage = messageService.createMessage(createMessageDTO, creator, receiver);
+        Message createdMessage = messageService.createMessage(message);
 
         assertNotNull(createdMessage);
         assertEquals(message.getText(), createdMessage.getText());
-        verify(messageRepository, times(1)).save(any(Message.class));
+        verify(messageRepository).save(any(Message.class));
     }
 
     @Test
@@ -85,19 +82,21 @@ class MessageServiceTest {
     void updateMessage_Success() {
         when(messageRepository.findById(1L)).thenReturn(Optional.of(message));
         when(messageRepository.save(any(Message.class))).thenReturn(message);
+        Message newMessageData = new Message();
+        newMessageData.setText("Updated text");
 
-        Message updatedMessage = messageService.updateMessage(1L, updateMessageDTO);
+        Message updatedMessage = messageService.updateMessage(1L, newMessageData);
 
         assertNotNull(updatedMessage);
-        assertEquals(updateMessageDTO.text(), updatedMessage.getText());
         verify(messageRepository).save(any(Message.class));
+        assertEquals(newMessageData.getText(), updatedMessage.getText());
     }
 
     @Test
     void updateMessage_ThrowsException_WhenMessageNotFound() {
         when(messageRepository.findById(1L)).thenReturn(Optional.empty());
 
-        assertThrows(EntityNotFoundException.class, () -> messageService.updateMessage(1L, updateMessageDTO));
+        assertThrows(EntityNotFoundException.class, () -> messageService.updateMessage(1L, message));
     }
 
     @Test

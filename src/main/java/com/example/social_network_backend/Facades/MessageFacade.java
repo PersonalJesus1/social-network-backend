@@ -2,6 +2,7 @@ package com.example.social_network_backend.Facades;
 
 import com.example.social_network_backend.DTO.Message.CreateMessageDTO;
 import com.example.social_network_backend.DTO.Message.ResponseMessageDTO;
+import com.example.social_network_backend.DTO.Message.ResponseUpdatedMessageDTO;
 import com.example.social_network_backend.DTO.Message.UpdateMessageDTO;
 import com.example.social_network_backend.Entities.Message;
 import com.example.social_network_backend.Entities.User;
@@ -17,6 +18,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
 
@@ -33,7 +35,7 @@ public class MessageFacade {
         User creator = userService.getUserById(dto.creatorId());
         User receiver = userService.getUserById(dto.receiverId());
         validate(dto);
-        Message message = messageService.createMessage(dto, creator, receiver);
+        Message message = messageService.createMessage(mapToEntity(dto, creator, receiver));
         return mapToResponseDto(message);
     }
 
@@ -45,10 +47,13 @@ public class MessageFacade {
                 .toList();
     }
 
-    public ResponseMessageDTO updateMessage(Long id, UpdateMessageDTO dto) {
+    public ResponseUpdatedMessageDTO updateMessage(Long id, UpdateMessageDTO dto) {
         validate(dto);
-        Message message = messageService.updateMessage(id, dto);
-        return mapToResponseDto(message);
+        Message updatedMessage = new Message();
+        updatedMessage.setUpdatedDate(LocalDateTime.now());
+        updatedMessage.setText(dto.text());
+        Message message = messageService.updateMessage(id, updatedMessage);
+        return mapToUpdatedResponseDto(message);
     }
 
     public void deleteMessage(Long id) {
@@ -70,6 +75,18 @@ public class MessageFacade {
     }
 
     private ResponseMessageDTO mapToResponseDto(Message message) {
-        return new ResponseMessageDTO(message.getId(), message.getText(), message.getDate(), message.getCreator().getName(), message.getReceiver().getName());
+        return new ResponseMessageDTO(message.getId(), message.getText(), message.getCreatedDate(), message.getCreator().getName(), message.getReceiver().getName());
+    }
+
+    private ResponseUpdatedMessageDTO mapToUpdatedResponseDto(Message message) {
+        return new ResponseUpdatedMessageDTO(message.getId(), message.getText(), message.getUpdatedDate(), message.getCreator().getName(), message.getReceiver().getName());
+    }
+
+    private Message mapToEntity(CreateMessageDTO dto, User creator, User receiver) {
+        Message message = new Message();
+        message.setCreator(creator);
+        message.setReceiver(receiver);
+        message.setText(dto.text());
+        return message;
     }
 }

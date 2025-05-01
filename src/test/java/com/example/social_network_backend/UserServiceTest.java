@@ -38,8 +38,6 @@ class UserServiceTest {
     private UserService userService;
 
     private User user;
-    private CreateUserDTO createUserDTO;
-    private UpdateUserDTO updateUserDTO;
 
     @BeforeEach
     void setUp() {
@@ -50,8 +48,6 @@ class UserServiceTest {
         user.setEmail("john.doe@example.com");
         user.setPassword("hashedPassword");
 
-        createUserDTO = new CreateUserDTO("John", "Doe", "john.doe@example.com", "password123", UserSex.MALE, UserRole.USER);
-        updateUserDTO = new UpdateUserDTO("John", "Smith", "john.smith@example.com");
     }
 
     @Test
@@ -59,7 +55,7 @@ class UserServiceTest {
         when(passwordEncoder.encode(anyString())).thenReturn("hashedPassword");
         when(userRepository.save(any(User.class))).thenReturn(user);
 
-        User createdUser = userService.createUser(createUserDTO);
+        User createdUser = userService.createUser(user);
 
         assertNotNull(createdUser);
         assertEquals(user.getEmail(), createdUser.getEmail());
@@ -98,19 +94,21 @@ class UserServiceTest {
     void updateUser_Success() {
         when(userRepository.findById(1L)).thenReturn(Optional.of(user));
         when(userRepository.save(any(User.class))).thenReturn(user);
+        User newUser = new User();
+        newUser.setSurname("NewSurname");
 
-        User updatedUser = userService.updateUser(1L, updateUserDTO);
+        User updatedUser = userService.updateUser(1L, newUser);
 
         assertNotNull(updatedUser);
-        assertEquals(updateUserDTO.name(), updatedUser.getName());
-        assertEquals(updateUserDTO.surname(), updatedUser.getSurname());
+        assertEquals("NewSurname", updatedUser.getSurname());
+
     }
 
     @Test
     void updateUser_NotFound() {
         when(userRepository.findById(1L)).thenReturn(Optional.empty());
 
-        assertThrows(EntityNotFoundException.class, () -> userService.updateUser(1L, updateUserDTO));
+        assertThrows(EntityNotFoundException.class, () -> userService.updateUser(1L, user));
     }
 
     @Test

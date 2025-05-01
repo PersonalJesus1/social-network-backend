@@ -36,12 +36,11 @@ class SubscriptionServiceTest {
 
     @Test
     void subscribe_Success() {
-        SubscriptionDTO dto = new SubscriptionDTO(1L, 2L);
+        Subscription subscription = new Subscription();
         User follower = new User();
         follower.setId(1L);
         User following = new User();
         following.setId(2L);
-        Subscription subscription = new Subscription();
         subscription.setFollower(follower);
         subscription.setFollowing(following);
 
@@ -49,14 +48,13 @@ class SubscriptionServiceTest {
         when(userRepository.findById(2L)).thenReturn(Optional.of(following));
         when(subscriptionRepository.existsByFollowerIdAndFollowingId(1L, 2L)).thenReturn(false);
 
-        subscriptionService.subscribe(dto);
+        subscriptionService.subscribe(subscription);
 
         verify(subscriptionRepository).save(any(Subscription.class));
     }
 
     @Test
     void unsubscribe_Success() {
-        SubscriptionDTO dto = new SubscriptionDTO(1L, 2L);
         User follower = new User();
         follower.setId(1L);
         User following = new User();
@@ -65,29 +63,28 @@ class SubscriptionServiceTest {
         subscription.setFollower(follower);
         subscription.setFollowing(following);
 
-        when(userRepository.findById(1L)).thenReturn(Optional.of(follower));
-        when(userRepository.findById(2L)).thenReturn(Optional.of(following));
         when(subscriptionRepository.existsByFollowerIdAndFollowingId(1L, 2L)).thenReturn(true);
 
-        subscriptionService.unsubscribe(dto);
+        subscriptionService.unsubscribe(subscription);
 
         verify(subscriptionRepository).deleteByFollowerIdAndFollowingId(1L, 2L);
     }
 
     @Test
     void subscribe_ThrowsException_WhenAlreadySubscribed() {
-        SubscriptionDTO dto = new SubscriptionDTO(1L, 2L);
-
+        Subscription subscription = new Subscription();
         User follower = new User();
         follower.setId(1L);
         User following = new User();
         following.setId(2L);
+        subscription.setFollower(follower);
+        subscription.setFollowing(following);
 
         when(userRepository.findById(1L)).thenReturn(Optional.of(follower));
         when(userRepository.findById(2L)).thenReturn(Optional.of(following));
         when(subscriptionRepository.existsByFollowerIdAndFollowingId(1L, 2L)).thenReturn(true);
 
-        assertThrows(SubscriptionExistsException.class, () -> subscriptionService.subscribe(dto));
+        assertThrows(SubscriptionExistsException.class, () -> subscriptionService.subscribe(subscription));
         verify(subscriptionRepository, never()).save(any(Subscription.class));
     }
 

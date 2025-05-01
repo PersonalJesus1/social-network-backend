@@ -2,6 +2,7 @@ package com.example.social_network_backend.Controllers;
 
 import com.example.social_network_backend.DTO.Comment.CreateCommentDTO;
 import com.example.social_network_backend.DTO.Comment.ResponseCommentDTO;
+import com.example.social_network_backend.DTO.Comment.ResponseUpdatedCommentDTO;
 import com.example.social_network_backend.DTO.Comment.UpdateCommentDTO;
 import com.example.social_network_backend.Facades.CommentFacade;
 import jakarta.validation.Valid;
@@ -35,12 +36,11 @@ public class CommentController {
     @GetMapping
     public ResponseEntity<List<ResponseCommentDTO>> getAllComments(@RequestParam(defaultValue = "0") @Min(0) int page,
                                                                    @RequestParam(defaultValue = "10") @Min(1) int size) {
-
         return ResponseEntity.ok(commentFacade.getAllComments(page, size));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ResponseCommentDTO> updateComment(@PathVariable Long id, @Valid @RequestBody UpdateCommentDTO dto) {
+    public ResponseEntity<ResponseUpdatedCommentDTO> updateComment(@PathVariable Long id, @Valid @RequestBody UpdateCommentDTO dto) {
         return ResponseEntity.ok(commentFacade.updateComment(id, dto));
     }
 

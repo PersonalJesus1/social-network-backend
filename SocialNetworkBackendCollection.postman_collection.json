@@ -15,6 +15,12 @@
 						{
 							"name": "http://localhost:8080/api/v1/users/",
 							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": {
+										"token": "{{access_token}}"
+									}
+								},
 								"method": "GET",
 								"header": [],
 								"url": "{{url}}/users"
@@ -22,11 +28,17 @@
 							"response": []
 						},
 						{
-							"name": "http://localhost:8080/api/v1/users/{{userId}}",
+							"name": "http://localhost:8080/api/v1/users/1",
 							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": {
+										"token": "{{access_token}}"
+									}
+								},
 								"method": "GET",
 								"header": [],
-								"url": "{{url}}/users/{{userId}}"
+								"url": "{{url}}/users/1"
 							},
 							"response": []
 						}
@@ -38,6 +50,12 @@
 						{
 							"name": "http://localhost:8080/api/v1/messages/user/1",
 							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": {
+										"token": "{{access_token}}"
+									}
+								},
 								"method": "GET",
 								"header": [],
 								"url": "{{url}}/messages/user/1"
@@ -47,6 +65,12 @@
 						{
 							"name": "http://localhost:8080/api/v1/messages/",
 							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": {
+										"token": "{{access_token}}"
+									}
+								},
 								"method": "GET",
 								"header": [],
 								"url": "{{url}}/messages"
@@ -61,6 +85,12 @@
 						{
 							"name": "http://localhost:8080/api/v1/comments/",
 							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": {
+										"token": "{{access_token}}"
+									}
+								},
 								"method": "GET",
 								"header": [],
 								"url": "{{url}}/comments"
@@ -68,11 +98,17 @@
 							"response": []
 						},
 						{
-							"name": "http://localhost:8080/api/v1/comments/{{commentId}}",
+							"name": "http://localhost:8080/api/v1/comments/1",
 							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": {
+										"token": "{{access_token}}"
+									}
+								},
 								"method": "GET",
 								"header": [],
-								"url": "{{url}}/comments/{{commentId}}"
+								"url": "{{url}}/comments/1"
 							},
 							"response": []
 						}
@@ -84,6 +120,12 @@
 						{
 							"name": "http://localhost:8080/api/v1/likes/",
 							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": {
+										"token": "{{access_token}}"
+									}
+								},
 								"method": "GET",
 								"header": [],
 								"url": "{{url}}/likes"
@@ -91,11 +133,17 @@
 							"response": []
 						},
 						{
-							"name": "http://localhost:8080/api/v1/likes/{{likeId}}",
+							"name": "http://localhost:8080/api/v1/likes/1",
 							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": {
+										"token": "{{access_token}}"
+									}
+								},
 								"method": "GET",
 								"header": [],
-								"url": "{{url}}/likes/{{likeId}}"
+								"url": "{{url}}/likes/1"
 							},
 							"response": []
 						}
@@ -107,6 +155,12 @@
 						{
 							"name": "http://localhost:8080/api/v1/posts/",
 							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": {
+										"token": "{{access_token}}"
+									}
+								},
 								"method": "GET",
 								"header": [],
 								"url": "{{url}}/posts"
@@ -114,16 +168,22 @@
 							"response": []
 						},
 						{
-							"name": "http://localhost:8080/api/v1/posts/{{postId}}",
+							"name": "http://localhost:8080/api/v1/posts/1",
 							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": {
+										"token": "{{access_token}}"
+									}
+								},
 								"method": "GET",
 								"header": [],
-								"url": "{{url}}/posts/{{postId}}"
+								"url": "{{url}}/posts/1"
 							},
 							"response": []
 						},
 						{
-							"name": "http://localhost:8080/api/v1/posts/user/{{messageUserId}}",
+							"name": "http://localhost:8080/api/v1/posts/user/1",
 							"event": [
 								{
 									"listen": "test",
@@ -137,6 +197,12 @@
 								}
 							],
 							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": {
+										"token": "{{access_token}}"
+									}
+								},
 								"method": "GET",
 								"header": [],
 								"url": "{{url}}/posts/user/1"
@@ -151,6 +217,12 @@
 						{
 							"name": "http://localhost:8080/api/v1/subscriptions/1/subscriptions",
 							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": {
+										"token": "{{access_token}}"
+									}
+								},
 								"method": "GET",
 								"header": [],
 								"url": "{{url}}/subscriptions/1/subscriptions"
@@ -160,18 +232,30 @@
 						{
 							"name": "http://localhost:8080/api/v1/subscriptions/1/subscriptions/count",
 							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": {
+										"token": "{{access_token}}"
+									}
+								},
 								"method": "GET",
 								"header": [],
-								"url": "{{url}}/subscriptions/1/subscriptions/count"
+								"url": "{{url}}/subscriptions/2/subscriptions/count"
 							},
 							"response": []
 						},
 						{
 							"name": "http://localhost:8080/api/v1/subscriptions/1/followers",
 							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": {
+										"token": "{{access_token}}"
+									}
+								},
 								"method": "GET",
 								"header": [],
-								"url": "{{url}}/subscriptions/1/followers"
+								"url": "{{url}}/subscriptions/2/followers"
 							},
 							"response": []
 						}
@@ -183,45 +267,176 @@
 			"name": "POST Requests",
 			"item": [
 				{
-					"name": "http://localhost:8080/api/v1/users",
-					"event": [
+					"name": "Auth",
+					"item": [
 						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test(\"Сохранение ID\", function () {\r",
-									"    var jsonData = pm.response.json();\r",
-									"    console.log(\"Ответ:\", jsonData); // Лог в консоль\r",
-									"    pm.environment.set(\"userId\", jsonData.userId);\r",
-									"});\r",
-									""
-								],
-								"type": "text/javascript",
-								"packages": {}
-							}
-						}
-					],
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"name\": \"Test\",\r\n    \"surname\": \"Test\",\r\n    \"email\": \"test@example.com\",\r\n    \"password\": \"test1234\",\r\n    \"sex\": \"MALE\",\r\n    \"role\": \"USER\"\r\n}\r\n",
-							"options": {
-								"raw": {
-									"language": "json"
+							"name": "http://localhost:8080/api/v1/auth/register",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"\r",
+											"pm.test(\"Сохранение ID\", function () {\r",
+											"    var jsonData = pm.response.json();    \r",
+											"    pm.environment.set(\"access_token\", jsonData.access_token);\r",
+											"pm.environment.set(\"refresh_token\", jsonData.refresh_token);\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
 								}
-							}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": " {\"name\": \"John\",\r\n  \"surname\": \"Doe\",\r\n  \"email\": \"john.doe@example.com\",\r\n  \"password\": \"password\",\r\n  \"sex\": \"MALE\",\r\n  \"role\": \"USER\"}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": "{{url}}/auth/register"
+							},
+							"response": []
 						},
-						"url": "http://127.0.0.1:8080/api/v1/users"
-					},
-					"response": []
+						{
+							"name": "http://localhost:8080/api/v1/auth/register 2",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"\r",
+											"pm.test(\"Сохранение ID\", function () {\r",
+											"    var jsonData = pm.response.json();    \r",
+											"    pm.environment.set(\"access_token2\", jsonData.access_token);\r",
+											"pm.environment.set(\"refresh_token2\", jsonData.refresh_token);\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"name\": \"Anna\",\r\n  \"surname\": \"Taylor\",\r\n  \"email\": \"anna.taylor@gmail.com\",\r\n  \"password\": \"password\",\r\n  \"sex\": \"FEMALE\",\r\n  \"role\": \"USER\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": "{{url}}/auth/register"
+							},
+							"response": []
+						},
+						{
+							"name": "http://localhost:8080/api/v1/auth/login",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"\r",
+											"pm.test(\"Сохранение ID\", function () {\r",
+											"    var jsonData = pm.response.json();    \r",
+											"    pm.environment.set(\"access_token\", jsonData.access_token);\r",
+											"pm.environment.set(\"refresh_token\", jsonData.refresh_token);\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"email\": \"john.doe@example.com\",\r\n  \"password\": \"password\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": "{{url}}/auth/login"
+							},
+							"response": []
+						},
+						{
+							"name": "http://localhost:8080/api/v1/auth/refresh-token",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"\r",
+											"pm.test(\"Сохранение ID\", function () {\r",
+											"    var jsonData = pm.response.json();    \r",
+											"    pm.environment.set(\"access_token\", jsonData.access_token);\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": {
+										"token": "{{access_token}}"
+									}
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": "{{url}}/auth/refresh-token"
+							},
+							"response": []
+						}
+					]
 				},
 				{
 					"name": "http://localhost:8080/api/v1/messages",
@@ -243,7 +458,10 @@
 					],
 					"request": {
 						"auth": {
-							"type": "noauth"
+							"type": "bearer",
+							"bearer": {
+								"token": "{{access_token}}"
+							}
 						},
 						"method": "POST",
 						"header": [],
@@ -276,13 +494,16 @@
 					],
 					"request": {
 						"auth": {
-							"type": "noauth"
+							"type": "bearer",
+							"bearer": {
+								"token": "{{access_token}}"
+							}
 						},
 						"method": "POST",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"followerId\": 2,\r\n  \"followingId\": 3\r\n}\r\n    ",
+							"raw": "{\r\n  \"followerId\": 1,\r\n  \"followingId\": 2\r\n}\r\n    ",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -314,13 +535,16 @@
 					],
 					"request": {
 						"auth": {
-							"type": "noauth"
+							"type": "bearer",
+							"bearer": {
+								"token": "{{access_token}}"
+							}
 						},
 						"method": "POST",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"text\": \"This is post text\",\r\n  \"pictureBase64\": \"iVBORw0KGgoAAAANSUhEUgAAAAUA\"   \r\n}",
+							"raw": "{\r\n  \"text\": \"Test post with image\",\r\n  \"base64Image\": \"iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg==\"\r\n}\r\n",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -365,7 +589,10 @@
 					],
 					"request": {
 						"auth": {
-							"type": "noauth"
+							"type": "bearer",
+							"bearer": {
+								"token": "{{access_token}}"
+							}
 						},
 						"method": "POST",
 						"header": [],
@@ -403,7 +630,10 @@
 					],
 					"request": {
 						"auth": {
-							"type": "noauth"
+							"type": "bearer",
+							"bearer": {
+								"token": "{{access_token}}"
+							}
 						},
 						"method": "POST",
 						"header": [],
@@ -426,31 +656,13 @@
 			"name": "PUT Requests",
 			"item": [
 				{
-					"name": "http://localhost:8080/api/v1/users/{{userId}}",
+					"name": "http://localhost:8080/api/v1/messages/1",
 					"request": {
 						"auth": {
-							"type": "noauth"
-						},
-						"method": "PUT",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n   \"name\": \"TestUpdated\",\r\n   \"surname\": \"TestUpdated\",\r\n   \"email\": \"test.updated@example.com\"\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
+							"type": "bearer",
+							"bearer": {
+								"token": "{{access_token}}"
 							}
-						},
-						"url": "{{url}}/users/{{userId}}"
-					},
-					"response": []
-				},
-				{
-					"name": "http://localhost:8080/api/v1/messages/{{messageId}}",
-					"request": {
-						"auth": {
-							"type": "noauth"
 						},
 						"method": "PUT",
 						"header": [],
@@ -463,36 +675,18 @@
 								}
 							}
 						},
-						"url": "{{url}}/messages/{{messageId}}"
+						"url": "{{url}}/messages/1"
 					},
 					"response": []
 				},
 				{
-					"name": "http://localhost:8080/api/v1/likes/{{likeId}}",
+					"name": "http://localhost:8080/api/v1/posts/1",
 					"request": {
 						"auth": {
-							"type": "noauth"
-						},
-						"method": "PUT",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n  \r\n}\r\n",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
+							"type": "bearer",
+							"bearer": {
+								"token": "{{access_token}}"
 							}
-						},
-						"url": "{{url}}/likes/{{likeId}}"
-					},
-					"response": []
-				},
-				{
-					"name": "http://localhost:8080/api/v1/posts/{{postId}}",
-					"request": {
-						"auth": {
-							"type": "noauth"
 						},
 						"method": "PUT",
 						"header": [],
@@ -505,15 +699,18 @@
 								}
 							}
 						},
-						"url": "{{url}}/posts/{{postId}}"
+						"url": "{{url}}/posts/1"
 					},
 					"response": []
 				},
 				{
-					"name": "http://localhost:8080/api/v1/comments/{{commentId}}",
+					"name": "http://localhost:8080/api/v1/comments/1",
 					"request": {
 						"auth": {
-							"type": "noauth"
+							"type": "bearer",
+							"bearer": {
+								"token": "{{access_token}}"
+							}
 						},
 						"method": "PUT",
 						"header": [],
@@ -526,7 +723,7 @@
 								}
 							}
 						},
-						"url": "{{url}}/comments/{{commentId}}"
+						"url": "{{url}}/comments/1"
 					},
 					"response": []
 				}
@@ -536,50 +733,62 @@
 			"name": "DELETE Requests",
 			"item": [
 				{
-					"name": "http://localhost:8080/api/v1/users/{{userId}}",
+					"name": "http://localhost:8080/api/v1/users/1",
 					"request": {
 						"auth": {
-							"type": "noauth"
+							"type": "bearer",
+							"bearer": {
+								"token": "{{access_token}}"
+							}
 						},
 						"method": "DELETE",
 						"header": [],
-						"url": "{{url}}/users/{{userId}}"
+						"url": "{{url}}/users/1"
 					},
 					"response": []
 				},
 				{
-					"name": "http://localhost:8080/api/v1/messages/{{messageId}}",
+					"name": "http://localhost:8080/api/v1/messages/1",
 					"request": {
 						"auth": {
-							"type": "noauth"
+							"type": "bearer",
+							"bearer": {
+								"token": "{{access_token}}"
+							}
 						},
 						"method": "DELETE",
 						"header": [],
-						"url": "{{url}}/messages/{{messageId}}"
+						"url": "{{url}}/messages/1"
 					},
 					"response": []
 				},
 				{
-					"name": "http://localhost:8080/api/v1/posts/{{postsId}}",
+					"name": "http://localhost:8080/api/v1/posts/1",
 					"request": {
 						"auth": {
-							"type": "noauth"
+							"type": "bearer",
+							"bearer": {
+								"token": "{{access_token}}"
+							}
 						},
 						"method": "DELETE",
 						"header": [],
-						"url": "{{url}}/posts/{{postId}}"
+						"url": "{{url}}/posts/1"
 					},
 					"response": []
 				},
 				{
-					"name": "http://localhost:8080/api/v1/comments/{{commentId}}",
+					"name": "http://localhost:8080/api/v1/comments/1",
 					"request": {
 						"auth": {
-							"type": "noauth"
+							"type": "bearer",
+							"bearer": {
+								"token": "{{access_token}}"
+							}
 						},
 						"method": "DELETE",
 						"header": [],
-						"url": "{{url}}/comments/{{commentId}}"
+						"url": "{{url}}/comments/1"
 					},
 					"response": []
 				},
@@ -587,13 +796,16 @@
 					"name": "http://localhost:8080/api/v1/subscriptions",
 					"request": {
 						"auth": {
-							"type": "noauth"
+							"type": "bearer",
+							"bearer": {
+								"token": "{{access_token}}"
+							}
 						},
 						"method": "DELETE",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"followerId\": 2,\r\n  \"followingId\": 3\r\n}",
+							"raw": "{\r\n  \"followerId\": 1,\r\n  \"followingId\": 2\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -605,29 +817,36 @@
 					"response": []
 				},
 				{
-					"name": "http://localhost:8080/api/v1/likes/{{likeId}}",
+					"name": "http://localhost:8080/api/v1/likes/1",
 					"request": {
 						"auth": {
-							"type": "noauth"
+							"type": "bearer",
+							"bearer": {
+								"token": "{{access_token}}"
+							}
 						},
 						"method": "DELETE",
 						"header": [],
-						"url": "{{url}}/likes/{{likeId}}"
+						"url": "{{url}}/likes/1"
 					},
 					"response": []
 				}
 			]
 		},
 		{
-			"name": "{{url}}/auth/login",
+			"name": "http://localhost:8080/api/v1/auth",
 			"event": [
 				{
 					"listen": "test",
 					"script": {
 						"exec": [
-							"const myData = pm.response.json();\r",
 							"\r",
-							"pm.environment.set('token',myData.token);"
+							"pm.test(\"Сохранение ID\", function () {\r",
+							"    var jsonData = pm.response.json();    \r",
+							"    pm.environment.set(\"access_token\", jsonData.access_token);\r",
+							"pm.environment.set(\"refresh_token\", jsonData.refresh_token);\r",
+							"});\r",
+							""
 						],
 						"type": "text/javascript",
 						"packages": {}
@@ -636,31 +855,29 @@
 			],
 			"request": {
 				"auth": {
-					"type": "noauth"
+					"type": "bearer",
+					"bearer": {
+						"token": "{{access_token}}"
+					}
 				},
-				"method": "POST",
+				"method": "PATCH",
 				"header": [
 					{
 						"key": "Content-Type",
 						"value": "application/json",
 						"type": "text"
-					},
-					{
-						"key": "Authorization",
-						"value": "Bearer{{token}}",
-						"type": "text"
 					}
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n  \"email\": \"john.doe@example.com\",\r\n  \"password\": \"password123\"\r\n}",
+					"raw": "{\r\n  \"currentPassword\": \"password\",\r\n  \"newPassword\": \"newPassword\",\r\n  \"confirmationPassword\": \"newPassword\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
 						}
 					}
 				},
-				"url": "{{url}}/auth/login"
+				"url": "{{url}}/auth"
 			},
 			"response": []
 		}

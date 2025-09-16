@@ -5,4 +5,3 @@ public class SubscriptionExistsException extends RuntimeException {
         super(message);
     }
 }
-

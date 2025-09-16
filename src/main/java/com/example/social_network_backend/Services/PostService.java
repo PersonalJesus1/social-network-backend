@@ -3,14 +3,17 @@ package com.example.social_network_backend.Services;
 import com.example.social_network_backend.Entities.Image;
 import com.example.social_network_backend.Entities.Post;
 import com.example.social_network_backend.Entities.User;
+import com.example.social_network_backend.Exceptions.AccessDeniedException;
 import com.example.social_network_backend.Repositories.PostRepository;
 import com.example.social_network_backend.Repositories.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @AllArgsConstructor
@@ -52,20 +55,28 @@ public class PostService {
     }
 
     @Transactional
-    public Post updatePost(Long id, Post post) {
-        Post existedPost = postRepository.findById(id).orElseThrow(EntityNotFoundException::new);
-        existedPost.setText(post.getText());
-        // Save image and record the path
-        if (post.getImage() != null && post.getImage().getImagePath() != null && !post.getImage().getImagePath().isEmpty()) {
-            fileService.deleteFile(post.getImage().getImagePath());
-            Image image = fileService.saveImage(post.getImage().getImagePath(), post.getCreator().getEmail());
-            post.setImage(image);
-        } else {
-            Image image = fileService.saveImage(post.getImage().getImagePath(), post.getCreator().getEmail());
-            post.setImage(image);
+    public Post updatePost(Long id, Post post, Authentication authentication) {
+        Post existedPost = postRepository.findById(id)
+                .orElseThrow(EntityNotFoundException::new);
+
+        String currentUserEmail = authentication.getName();
+        boolean isCreator = existedPost.getCreator().getEmail().equals(currentUserEmail);
+
+        if (!isCreator) {
+            throw new AccessDeniedException("You are not allowed to edit this post");
         }
-        postRepository.save(post);
-        return post;
+        existedPost.setText(post.getText());
+        existedPost.setUpdatedDate(LocalDateTime.now());
+
+        if (post.getImage() != null && post.getImage().getImagePath() != null && !post.getImage().getImagePath().isEmpty()) {
+            if (existedPost.getImage() != null) {
+                fileService.deleteFile(existedPost.getImage().getImagePath());
+            }
+            Image savedImage = fileService.saveImage(post.getImage().getImagePath(), existedPost.getCreator().getEmail());
+            savedImage.setPost(existedPost);
+            existedPost.setImage(savedImage);
+        }
+        return postRepository.save(existedPost);
     }
 
     @Transactional

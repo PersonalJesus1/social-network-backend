@@ -1,12 +1,9 @@
 package com.example.social_network_backend;
 
-import com.example.social_network_backend.DTO.Like.CreateLikeDTO;
 import com.example.social_network_backend.Entities.Like;
 import com.example.social_network_backend.Entities.Post;
 import com.example.social_network_backend.Entities.User;
 import com.example.social_network_backend.Repositories.LikeRepository;
-import com.example.social_network_backend.Repositories.PostRepository;
-import com.example.social_network_backend.Repositories.UserRepository;
 import com.example.social_network_backend.Services.LikeService;
 import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
@@ -28,7 +25,6 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
-import static org.mockito.Mockito.times;
 
 @ExtendWith(MockitoExtension.class)
 public class LikeServiceTest {

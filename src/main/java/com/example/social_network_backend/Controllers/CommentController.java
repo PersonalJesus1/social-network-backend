@@ -10,6 +10,7 @@ import jakarta.validation.constraints.Min;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -40,8 +41,8 @@ public class CommentController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ResponseUpdatedCommentDTO> updateComment(@PathVariable Long id, @Valid @RequestBody UpdateCommentDTO dto) {
-        return ResponseEntity.ok(commentFacade.updateComment(id, dto));
+    public ResponseEntity<ResponseUpdatedCommentDTO> updateComment(@PathVariable Long id, @Valid @RequestBody UpdateCommentDTO dto, Authentication authentication) {
+        return ResponseEntity.ok(commentFacade.updateComment(id, dto,authentication));
     }
 
     @DeleteMapping("/{id}")

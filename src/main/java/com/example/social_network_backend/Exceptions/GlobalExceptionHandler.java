@@ -1,6 +1,7 @@
 package com.example.social_network_backend.Exceptions;
 
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -26,6 +28,48 @@ public class GlobalExceptionHandler {
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
                 .body("Missing required request parameter: " + name);
+    }
+
+    @ExceptionHandler(UnauthotizationIssueException.class)
+    public ResponseEntity<String> handleUnauthotizationIssue(InvalidCredentialsException ex) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ex.getMessage()); // 401
+    }
+
+    // Обрабатываем доступ (403)
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<Map<String, Object>> handleAccessDenied(AccessDeniedException ex, HttpServletRequest req) {
+        Map<String, Object> body = new HashMap<>();
+        body.put("timestamp", Instant.now().toString());
+        body.put("status", 403);
+        body.put("error", "Forbidden");
+        body.put("message", "Access denied");
+        body.put("path", req.getRequestURI());
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(body);
+    }
+
+
+    @ExceptionHandler(WrongPasswordIssueException.class)
+    public ResponseEntity<String> handleWrongPasswordIssue(WrongPasswordIssueException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+    }
+
+    @ExceptionHandler(PasswordConformationIssueException.class)
+    public ResponseEntity<String> handlePasswordConformationIssue(PasswordConformationIssueException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+    }
+
+    @ExceptionHandler(UserExistsException.class)
+    public ResponseEntity<String> handleMissingParams() {
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body("This user already exists!");
+    }
+
+    @ExceptionHandler(InvalidCredentialsException.class)
+    public ResponseEntity<String> handleInvalidCredentials(InvalidCredentialsException ex) {
+        return ResponseEntity
+                .status(HttpStatus.UNAUTHORIZED)
+                .body(ex.getMessage());
     }
 
     @ExceptionHandler(UserAlreadyLikedPostException.class)

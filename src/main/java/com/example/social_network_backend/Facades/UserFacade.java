@@ -1,20 +1,19 @@
 package com.example.social_network_backend.Facades;
 
-import com.example.social_network_backend.DTO.User.CreateUserDTO;
 import com.example.social_network_backend.DTO.User.ResponseUserDTO;
 import com.example.social_network_backend.DTO.User.UpdateUserDTO;
 import com.example.social_network_backend.Entities.User;
 import com.example.social_network_backend.Services.UserService;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
+import jakarta.validation.Validator;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
-import jakarta.validation.Validator;
 
 import java.util.Set;
 
@@ -28,13 +27,6 @@ public class UserFacade {
 
     private final UserService userService;
     private final Validator validator;
-    private final PasswordEncoder passwordEncoder;
-
-    public ResponseUserDTO createUser(CreateUserDTO dto) {
-        validate(dto);
-        User user = userService.createUser(mapToEntity(dto));
-        return mapToResponseDto(user);
-    }
 
     public ResponseUserDTO getUserById(Long id) {
         User user = userService.getUserById(id);
@@ -49,11 +41,18 @@ public class UserFacade {
                 .toList();
     }
 
+    public String getAdminStats(Authentication authentication) {
+        return userService.getAdminStats(authentication);
+    }
+
     public ResponseUserDTO updateUser(Long id, UpdateUserDTO dto) {
-        User user = userService.getUserById(id);
         validate(dto);
-        userService.updateUser(id, user);
-        return mapToResponseDto(user);
+        User user = new User();
+        user.setName(dto.name());
+        user.setSurname(dto.surname());
+        user.setEmail(dto.email());
+        User updatedUser = userService.updateUser(id, user);
+        return mapToResponseDto(updatedUser);
     }
 
     public void deleteUser(Long id) {
@@ -67,18 +66,7 @@ public class UserFacade {
         }
     }
 
-    private ResponseUserDTO mapToResponseDto(User user) {
+    public ResponseUserDTO mapToResponseDto(User user) {
         return new ResponseUserDTO(user.getId(), user.getName(), user.getSurname(), user.getEmail(), user.getSex(), user.getRole());
-    }
-
-    private User mapToEntity(CreateUserDTO dto) {
-        User user = new User();
-        user.setName(dto.name());
-        user.setSurname(dto.surname());
-        user.setEmail(dto.email());
-        user.setPassword(passwordEncoder.encode(dto.password())); // Хешируем пароль
-        user.setSex(dto.sex());
-        user.setRole(dto.role());
-        return user;
     }
 }

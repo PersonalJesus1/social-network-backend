@@ -16,6 +16,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -54,12 +55,14 @@ public class PostFacade {
         return postService.getUserPosts(userId, pageable).stream().map(post -> mapToResponseDto(post)).toList();
     }
 
-    public ResponseUpdatedPostDTO updatePost(Long id, UpdatePostDTO dto) {
+    public ResponseUpdatedPostDTO updatePost(Long id, UpdatePostDTO dto, Authentication authentication) {
         validate(dto);
-        Post post = new Post();
-        post.setText(dto.text());
-        post.setImage(dto.image());
-        return mapToUpdatedResponseDto(postService.updatePost(id, post));
+        Post updatedPost = new Post();
+        updatedPost.setText(dto.text());
+        if (dto.image() != null) {
+            updatedPost.setImage(dto.image());
+        }
+        return mapToUpdatedResponseDto(postService.updatePost(id, updatedPost, authentication));
     }
 
     public void deletePost(Long id) {
@@ -100,6 +103,7 @@ public class PostFacade {
                 post.getId(),
                 post.getText(),
                 post.getImage(),
+                post.getCreatedDate(),
                 post.getUpdatedDate(),
                 likeCount);
     }

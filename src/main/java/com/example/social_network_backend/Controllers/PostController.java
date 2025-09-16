@@ -10,6 +10,7 @@ import jakarta.validation.constraints.Min;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -48,8 +49,8 @@ public class PostController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ResponseUpdatedPostDTO> updatePost(@PathVariable Long id, @Valid @RequestBody UpdatePostDTO dto) {
-        return ResponseEntity.ok(postFacade.updatePost(id, dto));
+    public ResponseEntity<ResponseUpdatedPostDTO> updatePost(@PathVariable Long id, @Valid @RequestBody UpdatePostDTO dto, Authentication authentication) {
+        return ResponseEntity.ok(postFacade.updatePost(id, dto,authentication));
     }
 
     @DeleteMapping("/{id}")

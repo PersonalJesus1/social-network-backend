@@ -26,7 +26,6 @@ public class SubscriptionService {
                 .orElseThrow(() -> new EntityNotFoundException("Follower not found"));
         User following = userRepository.findById(subscription.getFollowing().getId())
                 .orElseThrow(() -> new EntityNotFoundException("Following not found"));
-
         if (subscriptionRepository.existsByFollowerIdAndFollowingId(follower.getId(), following.getId())) {
             throw new SubscriptionExistsException("Already subscribed");
         }

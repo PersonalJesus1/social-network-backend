@@ -1,14 +1,13 @@
 package com.example.social_network_backend.Controllers;
 
-import com.example.social_network_backend.DTO.User.CreateUserDTO;
 import com.example.social_network_backend.DTO.User.UpdateUserDTO;
 import com.example.social_network_backend.DTO.User.ResponseUserDTO;
 import com.example.social_network_backend.Facades.UserFacade;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import lombok.AllArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,14 +20,13 @@ import java.util.List;
 public class UserController {
     private final UserFacade userFacade;
 
-    @PostMapping
-    public ResponseEntity<ResponseUserDTO> createUser(@Valid @RequestBody CreateUserDTO userDTO) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(userFacade.createUser(userDTO));
-    }
-
     @GetMapping("/{id}")
     public ResponseEntity<ResponseUserDTO> getUserById(@PathVariable Long id) {
         return ResponseEntity.ok(userFacade.getUserById(id));
+    }
+    @GetMapping("/stats")
+    public ResponseEntity<String> getStats(Authentication authentication) {
+        return ResponseEntity.ok(userFacade.getAdminStats(authentication));
     }
 
     @GetMapping

@@ -1,6 +1,5 @@
 package com.example.social_network_backend;
 
-import com.example.social_network_backend.DTO.SubscriptionDTO;
 import com.example.social_network_backend.Entities.Subscription;
 import com.example.social_network_backend.Entities.User;
 import com.example.social_network_backend.Exceptions.SubscriptionExistsException;

@@ -6,7 +6,8 @@ import jakarta.persistence.EntityNotFoundException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import lombok.AllArgsConstructor;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,14 +16,6 @@ import org.springframework.transaction.annotation.Transactional;
 public class UserService {
 
     private final UserRepository userRepository;
-    private final PasswordEncoder passwordEncoder;
-
-    @Transactional
-    public User createUser(User user) {
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-        userRepository.save(user);
-        return user;
-    }
 
     public User getUserById(Long id) {
         return userRepository.findById(id).orElseThrow(EntityNotFoundException::new);
@@ -32,14 +25,22 @@ public class UserService {
         return userRepository.findAll(pageable);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
+    public String getAdminStats(Authentication authentication) {
+        String email = authentication.getName();
+        var user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        return user.getStatisticsRequestedTime();
+    }
+
     @Transactional
     public User updateUser(Long id, User user) {
         User existedUser = userRepository.findById(id).orElseThrow(EntityNotFoundException::new);
         existedUser.setName(user.getName());
         existedUser.setSurname(user.getSurname());
         existedUser.setEmail(user.getEmail());
-        userRepository.save(user);
-        return user;
+        userRepository.save(existedUser);
+        return existedUser;
     }
 
     @Transactional
@@ -48,15 +49,5 @@ public class UserService {
             throw new EntityNotFoundException();
         }
         userRepository.deleteById(id);
-    }
-
-    public String authenticate(String email, String password) {
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new EntityNotFoundException("User not found"));
-        if (passwordEncoder.matches(password, user.getPassword())) {
-            return "dummy-jwt-token"; // JWT
-        } else {
-            throw new RuntimeException("Invalid credentials");
-        }
     }
 }

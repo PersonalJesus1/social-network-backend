@@ -1,6 +1,75 @@
-# !!! USERS
-### Unsuccessful case - size of surname (expectation 400)
-POST http://localhost:8080/api/v1/users
+#AUTHENTICATION, AUTHORIZATION, USERS
+### Successful case - Register User (expectation 200 OK)
+POST http://localhost:8080/api/v1/auth/register
+Content-Type: application/json
+
+{
+  "name": "John",
+  "surname": "Doe",
+  "email": "john.doe@example.com",
+  "password": "password",
+  "sex": "MALE",
+  "role": "USER"
+}
+
+> {%
+    client.global.set("auth-token", response.body.access_token);
+%}
+
+### Register User (second person for tests)
+POST http://localhost:8080/api/v1/auth/register
+Content-Type: application/json
+
+{
+  "name": "Anna",
+  "surname": "Taylor",
+  "email": "anna.taylor@gmail.com",
+  "password": "password",
+  "sex": "FEMALE",
+  "role": "USER"
+}
+
+> {%
+    client.global.set("auth-token2", response.body.access_token);
+%}
+
+### Register User (third person didnt write any messages)
+POST http://localhost:8080/api/v1/auth/register
+Content-Type: application/json
+
+{
+  "name": "Jack",
+  "surname": "White",
+  "email": "jack.white@gmail.com",
+  "password": "whitestripes",
+  "sex": "MALE",
+  "role": "USER"
+}
+
+> {%
+    client.global.set("auth-token3", response.body.access_token);
+%}
+
+### Register Admin
+POST http://localhost:8080/api/v1/auth/register
+Content-Type: application/json
+
+{
+  "name": "John",
+  "surname": "Known",
+  "email": "john.known@gmail.com",
+  "password": "adminAdmin",
+  "sex": "MALE",
+  "role": "ADMIN"
+}
+
+> {%
+    client.global.set("auth-token-admin", response.body.access_token);
+%}
+
+
+### Unsuccessful case - Size of name (expectation 400 Bad Request)
+POST http://localhost:8080/api/v1/auth/register
 Content-Type: application/json
 
 {
@@ -12,8 +81,8 @@ Content-Type: application/json
   "role": "ADMIN"
 }
 
-### Unsuccessful case - size of surname (expectation 400)
-POST http://localhost:8080/api/v1/users
+### Unsuccessful case - Size of surname (expectation 400 Bad Request)
+POST http://localhost:8080/api/v1/auth/register
 Content-Type: application/json
 
 {
@@ -25,8 +94,8 @@ Content-Type: application/json
   "role": "ADMIN"
 }
 
-### Unsuccessful case - wrong writting of email (expectation 400)
-POST http://localhost:8080/api/v1/users
+### Unsuccessful case - Wrong writting of email (expectation 400 Bad Request)
+POST http://localhost:8080/api/v1/auth/register
 Content-Type: application/json
 
 {
@@ -38,8 +107,8 @@ Content-Type: application/json
   "role": "ADMIN"
 }
 
-### Unsuccessful case -  size of password-less than suppose to be (expectation 400)
-POST http://localhost:8080/api/v1/users
+### Unsuccessful case - Size of password-less than suppose to be (expectation 400 Bad Request)
+POST http://localhost:8080/api/v1/auth/register
 Content-Type: application/json
 
 {
@@ -51,8 +120,8 @@ Content-Type: application/json
   "role": "ADMIN"
 }
 
-### Unsuccessful case -  size of password- more than suppose to be (expectation 400)
-POST http://localhost:8080/api/v1/users
+### Unsuccessful case -  Size of password- more than suppose to be (expectation 400 Bad Request)
+POST http://localhost:8080/api/v1/auth/register
 Content-Type: application/json
 
 {
@@ -64,8 +133,8 @@ Content-Type: application/json
   "role": "ADMIN"
 }
 
-### Unsuccessful case -  missing information of email (expectation 400)
-POST http://localhost:8080/api/v1/users
+### Unsuccessful case - Missing information of email (expectation 400 Bad Request)
+POST http://localhost:8080/api/v1/auth/register
 Content-Type: application/json
 
 {
@@ -76,15 +145,127 @@ Content-Type: application/json
   "role": "ADMIN"
 }
 
-### Unsuccessful case -  Require of non-exist id (expectation 404)
+
+### Unsuccessful case - Invalid sex value (expectation 400 Bad Request)
+POST http://localhost:8080/api/v1/auth/register
+Content-Type: application/json
+
+{
+  "name": "Anna",
+  "surname": "Taylor",
+  "email": "anna.taylor@gmail.com",
+  "password": "password",
+  "sex": "UNKNOWN",
+  "role": "USER"
+}
+
+### Unsuccessful case - already registered user  (expectation 400 Bad Request)
+POST http://localhost:8080/api/v1/auth/register
+Content-Type: application/json
+
+{
+  "name": "John",
+  "surname": "Doe",
+  "email": "john.doe@example.com",
+  "password": "password",
+  "sex": "MALE",
+  "role": "USER"
+}
+
+### Unsuccessful case - Login and update the token (expectation 200 OK)
+POST http://localhost:8080/api/v1/auth/login
+Content-Type: application/json
+
+{
+  "email": "john.doe@example.com",
+  "password": "password"
+}
+
+### Unsuccessful case - Login email not registered (expectation 401 Unauthorized)
+POST http://localhost:8080/api/v1/auth/login
+Content-Type: application/json
+
+{
+  "email": "nonexistinguser@gmail.com",
+  "password": "password"
+}
+
+### Unsuccessful case - Login again wrong password (expectation 401 Unauthorized)
+POST http://localhost:8080/api/v1/auth/login
+Content-Type: application/json
+
+{
+  "email": "john.doe@example.com",
+  "password": "password111"
+}
+
+### Successful case - Refresh token valid refresh token (expectation 200 OK)
+POST http://localhost:8080/api/v1/auth/refresh-token
+Authorization: Bearer {{auth-token}}
+
+### Unsuccessful case - Refresh token missing authorization header (expectation 401 Unauthorized)
+POST http://localhost:8080/api/v1/auth/refresh-token
+
+### Unsuccessful case - Refresh token invalid token (expectation 401 Unauthorized)
+POST http://localhost:8080/api/v1/auth/refresh-token
+Authorization: Bearer invalid.token.here
+
+### Successful case - Change the password (expectation 200 OK)
+PATCH http://localhost:8080/api/v1/auth
+Content-Type: application/json
+Authorization: Bearer {{auth-token}}
+
+{
+  "currentPassword": "password",
+  "newPassword": "newPassword",
+  "confirmationPassword": "newPassword"
+}
+
+### Unsuccessful case - Change the password newPassword doesnt match with conformation (expectation 400 Bad Request)
+PATCH http://localhost:8080/api/v1/auth
+Content-Type: application/json
+Authorization: Bearer {{auth-token}}
+
+{
+  "currentPassword": "newPassword",
+  "newPassword": "newPassword1",
+  "confirmationPassword": "newPassword"
+}
+
+### Unsuccessful case - Change the password conformation doesnt match with newPassword (expectation 400 Bad Request)
+PATCH http://localhost:8080/api/v1/auth
+Content-Type: application/json
+Authorization: Bearer {{auth-token}}
+
+{
+  "currentPassword": "newPassword",
+  "newPassword": "newPassword",
+  "confirmationPassword": "newPassword1"
+}
+
+### Unsuccessful case - Change the password wrong current password (expectation 400 Bad Request)
+PATCH http://localhost:8080/api/v1/auth
+Content-Type: application/json
+Authorization: Bearer {{auth-token}}
+
+{
+  "currentPassword": "newPassword222",
+  "newPassword": "newPassword",
+  "confirmationPassword": "newPassword"
+}
+
+### Require of non-exist id (expectation 404 Not found)
 GET http://localhost:8080/api/v1/users/9999
+Authorization: Bearer {{auth-token}}
 
-### Unsuccessful case -  Invalid pagination parameters (expectation 400 Bad Request)
+### Invalid pagination parameters (expectation 400 Bad Request)
 GET http://localhost:8080/api/v1/users?page=-1&size=0
+Authorization: Bearer {{auth-token}}
 
-### Unsuccessful case -  update user - wrong size of name (expectation 400)
+### Update user - wrong size of name (expectation 400 Bad Request)
 PUT http://localhost:8080/api/v1/users/1
 Content-Type: application/json
+Authorization: Bearer {{auth-token}}
 
 {
   "name": "JohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohn",
@@ -92,9 +273,10 @@ Content-Type: application/json
   "email": "john.doe@example.com"
 }
 
-### Unsuccessful case -  update user - wrong size of surname (expectation 400)
+### Update user - wrong size of surname (expectation 400 Bad Request)
 PUT http://localhost:8080/api/v1/users/1
 Content-Type: application/json
+Authorization: Bearer {{auth-token}}
 
 {
   "name": "John",
@@ -102,9 +284,10 @@ Content-Type: application/json
   "email": "john.doe@example.com"
 }
 
-### Unsuccessful case -  update user - wrong format of email (expectation 400)
+### Update user - wrong format of email (expectation 400 Bad Request)
 PUT http://localhost:8080/api/v1/users/1
 Content-Type: application/json
+Authorization: Bearer {{auth-token}}
 
 {
   "name": "John",
@@ -112,18 +295,20 @@ Content-Type: application/json
   "email": "john.doeexample.com"
 }
 
-### Unsuccessful case -  update user - missing surname (expectation 400)
+### Update user - missing surname (expectation 400 Bad Request)
 PUT http://localhost:8080/api/v1/users/1
 Content-Type: application/json
+Authorization: Bearer {{auth-token}}
 
 {
   "name": "John",
   "email": "john.doe@example.com"
 }
 
-### Unsuccessful case -  update user - non-exist id (expectation 404)
+### Update user - non-exist id (expectation 404 Not Found)
 PUT http://localhost:8080/api/v1/users/9999
 Content-Type: application/json
+Authorization: Bearer {{auth-token}}
 
 {
   "name": "John",
@@ -131,14 +316,78 @@ Content-Type: application/json
   "email": "john.doe@example.com"
 }
 
-### Unsuccessful case -  delete user - Require of non-exist id (expectation 404)
+### Delete user - Require of non-exist id (expectation 404 Not found)
 DELETE http://localhost:8080/api/v1/users/9999
+Authorization: Bearer {{auth-token}}
 
 
-# !!! MESSAGES
-### Unsuccessful case - size of text (expectation 400)
+MESSAGES
+
+### Create message
 POST http://localhost:8080/api/v1/messages
 Content-Type: application/json
+Authorization: Bearer {{auth-token}}
+
+{
+  "text": "Hi!",
+  "creatorId": 1,
+  "receiverId": 2
+}
+
+### Create another message
+POST http://localhost:8080/api/v1/messages
+Content-Type: application/json
+Authorization: Bearer {{auth-token2}}
+
+{
+  "text": "Hi!",
+  "creatorId": 2,
+  "receiverId": 1
+}
+
+### Successful case - Get own message (expectation 200 OK)
+GET http://localhost:8080/api/v1/messages/1
+Content-Type: application/json
+Authorization: Bearer {{auth-token}}
+
+### Successful case - Admin can get all messages (expectation 200 OK)
+GET http://localhost:8080/api/v1/messages
+Content-Type: application/json
+Authorization: Bearer {{auth-token-admin}}
+
+### Successful case - Admin can get a message (expectation 200 OK)
+GET http://localhost:8080/api/v1/messages/1
+Content-Type: application/json
+Authorization: Bearer {{auth-token-admin}}
+
+### Unsuccessful case - Unauthorized request (expectation 401 Unauthorized)
+GET http://localhost:8080/api/v1/messages/1
+Content-Type: application/json
+
+
+### Unsuccessful case - User tries to access another user's message (expectation 403 Forbidden)
+GET http://localhost:8080/api/v1/messages/2
+Content-Type: application/json
+Authorization: Bearer {{auth-token3}}
+
+###  Update message (expectation 403 Forbidden)
+PUT http://localhost:8080/api/v1/messages/2
+Content-Type: application/json
+Authorization: Bearer {{auth-token3}}
+
+{
+  "text": "JohnJo"
+}
+
+### Unsuccessful case - Message does not exist (expectation 404 Not Found)
+GET http://localhost:8080/api/v1/messages/999
+Content-Type: application/json
+Authorization: Bearer {{auth-token}}
+
+### Size of text (expectation 400 Bad Request)
+POST http://localhost:8080/api/v1/messages
+Content-Type: application/json
+Authorization: Bearer {{auth-token}}
 
 {
   "text": "JohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohn",
@@ -146,18 +395,20 @@ Content-Type: application/json
   "receiverId": 2
 }
 
-### Unsuccessful case - missing field (expectation 400)
+### Missing field (expectation 400 Bad Request)
 POST http://localhost:8080/api/v1/messages
 Content-Type: application/json
+Authorization: Bearer {{auth-token}}
 
 {
   "creatorId": 1,
   "receiverId": 2
 }
 
-### Create Message - creator not found (expect 404)
+### Create Message - creator not found (expectation 404 Not found)
 POST http://localhost:8080/api/v1/messages
 Content-Type: application/json
+Authorization: Bearer {{auth-token}}
 
 {
   "text": "Hi!",
@@ -165,51 +416,180 @@ Content-Type: application/json
   "receiverId": 2
 }
 
-###  Unsuccessful case - update message - size of text (expectation 400)
+###  Update message - size of text (expectation 400 Bad Request)
 PUT http://localhost:8080/api/v1/messages/1
 Content-Type: application/json
+Authorization: Bearer {{auth-token}}
 
 {
   "text": "JohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohn"
 }
 
-###  Unsuccessful case - update message - text is null (expectation 400)
+###  Update message - text is null (expectation 400 Bad Request)
 PUT http://localhost:8080/api/v1/messages/1
 Content-Type: application/json
+Authorization: Bearer {{auth-token}}
 
 {
 }
 
-###  Unsuccessful case - update message -  Non-exist id (expectation 404)
+###  Update message -  Non-exist id (expectation 404 Non found)
 PUT http://localhost:8080/api/v1/messages/9999
 Content-Type: application/json
+Authorization: Bearer {{auth-token}}
 
 {
   "text": "JohnJohnJohnJohnJohnJohnJohnJohnJ"
 }
 
-###  Unsuccessful case - update message -  Non-exist id (expectation 404)
+###  Update message -  Non-exist id (expectation 404 Non found)
 PUT http://localhost:8080/api/v1/messages/9999
 Content-Type: application/json
+Authorization: Bearer {{auth-token}}
 
 {
   "text": "dd"
 }
 
-### Unsuccessful case - Non-exist id (expectation 404)
+### Non-exist id (expectation 404 Not Found)
 GET http://localhost:8080/api/v1/messages/user/9999
+Authorization: Bearer {{auth-token}}
 
-### Unsuccessful case -  Invalid pagination parameters (expectation 400 Bad Request)
+### Invalid pagination parameters (expectation 400 Bad Request)
 GET http://localhost:8080/api/v1/messages?page=-1&size=0
+Authorization: Bearer {{auth-token}}
 
-### Unsuccessful case - Non-exist id (expectation 404)
+### Non-exist id (expectation 404 Not Found)
 DELETE http://localhost:8080/api/v1/messages/9999
+Authorization: Bearer {{auth-token}}
 
 
-# !!! COMMENTS
-### Unsuccessful case - null text (expectation 400 Bad Request)
+POSTS
+### Create post  (expectation 201 Created)
+POST http://localhost:8080/api/v1/posts?userId=1
+Content-Type: application/json
+Authorization: Bearer {{auth-token}}
+
+{
+  "text": "Heya",
+  "pictureBase64": "images/test.jpg"
+}
+
+### Update post  (expectation 200 OK)
+PUT http://localhost:8080/api/v1/posts/1
+Content-Type: application/json
+Authorization: Bearer {{auth-token}}
+
+{
+  "text": "Heya"
+}
+
+### Update post  (expectation 403 Forbidden)
+PUT http://localhost:8080/api/v1/posts/1
+Content-Type: application/json
+Authorization: Bearer {{auth-token2}}
+
+{
+  "text": "Heya"
+}
+
+### Create post — Null text (expectation 400 Bad Request)
+POST http://localhost:8080/api/v1/posts?userId=1
+Content-Type: application/json
+Authorization: Bearer {{auth-token}}
+
+{
+  "text": "",
+  "pictureBase64": "images/test.jpg"
+}
+
+### Create post — Missing userId parameter (expectation 400 Bad Request)
+POST http://localhost:8080/api/v1/posts
+Content-Type: application/json
+Authorization: Bearer {{auth-token}}
+
+{
+  "text": "Test post",
+  "imagePath": "images/test.jpg"
+}
+
+### Create post — Text too long (expectation 400 Bad Request)
+POST http://localhost:8080/api/v1/posts?userId=1
+Content-Type: application/json
+Authorization: Bearer {{auth-token}}
+
+{
+  "text": "JohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohn",
+  "imagePath": "images/test.jpg"
+}
+
+### Get post by invalid id (expectation 404 Not Found)
+GET http://localhost:8080/api/v1/posts/99999
+Authorization: Bearer {{auth-token}}
+
+### Update post — Empty text (expectation 400 Bad Request)
+PUT http://localhost:8080/api/v1/posts/1
+Content-Type: application/json
+Authorization: Bearer {{auth-token}}
+
+{
+  "text": ""
+}
+
+### Update post — Text too long (expectation 400 Bad Request)
+PUT http://localhost:8080/api/v1/posts/1
+Content-Type: application/json
+Authorization: Bearer {{auth-token}}
+
+{
+  "text": "JohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohn"
+}
+
+### Delete non-existent post (expectation 404 Not Found)
+DELETE http://localhost:8080/api/v1/posts/99999
+Authorization: Bearer {{auth-token}}
+
+### Get user posts — Invalid pagination (expectation 400 Bad Request)
+GET http://localhost:8080/api/v1/posts/user/1?page=-1&size=0
+Authorization: Bearer {{auth-token}}
+
+
+
+COMMENTS
+### Create comment  (expectation 201 Created)
+POST http://localhost:8080/api/v1/comments
+Content-Type: application/json
+Authorization: Bearer {{auth-token}}
+
+{
+  "text": "!!!",
+  "postId": 1,
+  "userId": 1
+}
+
+### Update comment (expectation 403 Forbidden)
+PUT http://localhost:8080/api/v1/comments/1
+Content-Type: application/json
+Authorization: Bearer {{auth-token3}}
+
+{
+  "text": "!?"
+}
+
+### Update comment (expectation 200 OK)
+PUT http://localhost:8080/api/v1/comments/1
+Content-Type: application/json
+Authorization: Bearer {{auth-token}}
+
+{
+  "text": "heya"
+}
+
+
+### Null text (expectation 400 Bad Request)
 POST http://localhost:8080/api/v1/comments?user=1
 Content-Type: application/json
+Authorization: Bearer {{auth-token}}
 
 {
   "text": null,
@@ -217,9 +597,10 @@ Content-Type: application/json
   "userId": 2
 }
 
-### Unsuccessful case - over limit text (expectation 400 Bad Request)
+### Create comment - Over limit text (expectation 400 Bad Request)
 POST http://localhost:8080/api/v1/comments
 Content-Type: application/json
+Authorization: Bearer {{auth-token}}
 
 {
   "text": "JohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohn"
@@ -227,181 +608,180 @@ Content-Type: application/json
   "userId": 2
 }
 
-### Unsuccessful case - update comment without text (expectation 400 Bad Request)
+### Update comment - Without text (expectation 400 Bad Request)
 PUT http://localhost:8080/api/v1/comments/1
 Content-Type: application/json
+Authorization: Bearer {{auth-token}}
 
 {
   "text": ""
 }
 
-### Unsuccessful case - update non-exist id comment (expectation 404 Bad Request)
+### Update non - Exist id comment (expectation 404 Bad Request)
 PUT http://localhost:8080/api/v1/comments/99999
 Content-Type: application/json
+Authorization: Bearer {{auth-token}}
 
 {
   "text": "Updated comment"
 }
 
-### Unsuccessful case - get non-exist id comment (expectation 404 Not Found)
+### Get non-exist id comment (expectation 404 Not Found)
 GET http://localhost:8080/api/v1/comments/99999
+Authorization: Bearer {{auth-token}}
 
-### Unsuccessful case - Invalid pagination parameters (expectation 400 Bad Request)
+### Invalid pagination parameters (expectation 400 Bad Request)
 GET http://localhost:8080/api/v1/comments?page=-1&size=0
+Authorization: Bearer {{auth-token}}
 
-### !!! Unsuccessful case - delete non-exist id comment (expectation 404 Not Found)
+### Delete non-exist id comment (expectation 404 Not Found)
 DELETE http://localhost:8080/api/v1/comments/99999
+Authorization: Bearer {{auth-token}}
 
 
-# !!! POSTS
-### Unsuccessful case -Create post — null text (400 Bad Request)
-POST http://localhost:8080/api/v1/posts?userId=1
-Content-Type: application/json
-
-{
-  "text": "",
-  "pictureBase64": "images/test.jpg"
-}
-
-### Unsuccessful case - Create post — missing userId param (400 Bad Request)
-POST http://localhost:8080/api/v1/posts
-Content-Type: application/json
-
-{
-  "text": "Test post",
-  "imagePath": "images/test.jpg"
-}
-
-### Unsuccessful case - Create post — text too long (400 Bad Request)
-POST http://localhost:8080/api/v1/posts?userId=1
-Content-Type: application/json
-
-{
-  "text": "JohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohn",
-  "imagePath": "images/test.jpg"
-}
-
-### Unsuccessful case - Get post by invalid id (404 Not Found)
-GET http://localhost:8080/api/v1/posts/99999
-
-### Unsuccessful case - Update post — empty text (400 Bad Request)
-PUT http://localhost:8080/api/v1/posts/1
-Content-Type: application/json
-
-{
-  "text": ""
-}
-
-### Unsuccessful case -  Update post — text too long (400 Bad Request)
-PUT http://localhost:8080/api/v1/posts/1
-Content-Type: application/json
-
-{
-  "text": "JohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohnJohn"
-}
-
-### Unsuccessful case -  Delete non-existent post (404 Not Found)
-DELETE http://localhost:8080/api/v1/posts/99999
-
-### Unsuccessful case -  Get user posts — invalid pagination (400 Bad Request)
-GET http://localhost:8080/api/v1/posts/user/1?page=-1&size=0
-
-
-
-# !!! LIKES
-### Unsuccessful case -  Get user posts — invalid pagination (400 Bad Request)
+LIKES (Unsuccessful cases)
+### Get user posts — Invalid pagination (expectation 400 Bad Request)
 POST http://localhost:8080/api/v1/likes
 Content-Type: application/json
+Authorization: Bearer {{auth-token}}
 
 {
   "userId": 0,
   "postId": null
 }
 
-### Unsuccessful case - Get non-exist like id (404 Not Found)
+### Get non-exist like id (expectation 404 Not Found)
 GET http://localhost:8080/api/v1/likes/999999
+Authorization: Bearer {{auth-token}}
 
-### Unsuccessful case - Get likes — invalid pagination (400 Bad Request)
+### Get likes — invalid pagination (expectation 400 Bad Request)
 GET http://localhost:8080/api/v1/likes?page=-1&size=10
+Authorization: Bearer {{auth-token}}
 
-### Unsuccessful case - Update non-exist like (404 Not Found)
-PUT http://localhost:8080/api/v1/likes/99999
-
-### Unsuccessful case - create existed like (409 Conflict)
+### Create  like (expectation 201 Created)
 POST http://localhost:8080/api/v1/likes
 Content-Type: application/json
+Authorization: Bearer {{auth-token}}
+
+{
+  "userId": 1,
+  "postId": 1
+}
+### Create existed like (expectation 409 Conflict)
+POST http://localhost:8080/api/v1/likes
+Content-Type: application/json
+Authorization: Bearer {{auth-token}}
 
 {
   "userId": 1,
   "postId": 1
 }
 
-### Unsuccessful case - Delete non-exist like (404 Not Found)
+### Delete non-exist like (expectation 404 Not Found)
 DELETE http://localhost:8080/api/v1/likes/99999
+Authorization: Bearer {{auth-token}}
 
 
-
-# !!! SUBSCRIPTIONS
-### Unsuccessful case -empty body (400 Bad Request)
+SUBSCRIPTIONS (Unsuccessful cases)
+### Create subscription - Empty body (expectation 400 Bad Request)
 POST http://localhost:8080/api/v1/subscriptions/subscribe
 Content-Type: application/json
+Authorization: Bearer {{auth-token}}
 
 {
 }
 
-### Unsuccessful case - Invalid subscribe request - wrong types (400 Bad Request)
+### Create subscription - Invalid subscribe request - wrong types (expectation 400 Bad Request)
 POST http://localhost:8080/api/v1/subscriptions/subscribe
 Content-Type: application/json
+Authorization: Bearer {{auth-token}}
 
 {
   "followingId": "abc",
   "followerId": null
 }
-
-###  Unsuccessful case - Conflict - Already subscribed (409 Conflict)
+###  Subscribe (expectation 200 OK)
 POST http://localhost:8080/api/v1/subscriptions/subscribe
 Content-Type: application/json
+Authorization: Bearer {{auth-token}}
 
 {
   "followerId": 1,
   "followingId": 3
 }
 
-###  Unsuccessful case - Conflict - Already unsubscribed (409 Conflict)
-DELETE http://localhost:8080/api/v1/subscriptions/unsubscribe
+###  Already subscribed (expectation 409 Conflict)
+POST http://localhost:8080/api/v1/subscriptions/subscribe
 Content-Type: application/json
+Authorization: Bearer {{auth-token}}
 
 {
   "followerId": 1,
-  "followingId": 2
+  "followingId": 3
 }
-
-###  Unsuccessful case - Non-exist id (404 Not found)
+###  Unsubscribe (expectation 200 OK)
 DELETE http://localhost:8080/api/v1/subscriptions/unsubscribe
 Content-Type: application/json
+Authorization: Bearer {{auth-token}}
+
+{
+  "followerId": 1,
+  "followingId": 3
+}
+
+###  Already unsubscribed (expectation 409 Conflict)
+DELETE http://localhost:8080/api/v1/subscriptions/unsubscribe
+Content-Type: application/json
+Authorization: Bearer {{auth-token}}
+
+{
+  "followerId": 1,
+  "followingId": 3
+}
+
+### Non-exist id (expectation 404 Not found)
+DELETE http://localhost:8080/api/v1/subscriptions/unsubscribe
+Content-Type: application/json
+Authorization: Bearer {{auth-token}}
 
 {
   "followerId": 9999,
   "followingId": 2
 }
 
-###  Unsuccessful case - Null id (400 Bad Request)
+###  Null id (expectation 400 Bad Request)
 DELETE http://localhost:8080/api/v1/subscriptions/unsubscribe
 Content-Type: application/json
+Authorization: Bearer {{auth-token}}
 
 {
   "followerId": null,
   "followingId": 2
 }
 
-###  Unsuccessful case - Non-exist id (404 Not found)
+###  Non-exist id (expectation 404 Not found)
 GET http://localhost:8080/api/v1/subscriptions/9999/subscriptions
+Authorization: Bearer {{auth-token}}
 
-###  Unsuccessful case - Non-exist id (404 Not found)
+###  Non-exist id (expectation 404 Not found)
 GET http://localhost:8080/api/v1/subscriptions/9999/followers
+Authorization: Bearer {{auth-token}}
 
-###  Unsuccessful case - Non-exist id (404 Not found)
+###  Non-exist id (expectation 404 Not found)
 GET http://localhost:8080/api/v1/subscriptions/9999/subscriptions/count
+Authorization: Bearer {{auth-token}}
 
-###  Unsuccessful case - Non-exist id (404 Not found)
+###  Non-exist id (expectation 404 Not found)
 GET http://localhost:8080/api/v1/subscriptions/9999/followers/count
+Authorization: Bearer {{auth-token}}
+
+###  get statistic for admin - 200
+GET http://localhost:8080/api/v1/statistics
+Content-Type: application/json
+Authorization: Bearer {{auth-token-admin}}
+
+{
+  "startDate": "01-08-2025",
+  "endDate": "01-09-2025"
+}
+

@@ -5,4 +5,3 @@ public class SubscriptionWasDeletedException extends RuntimeException {
         super(message);
     }
 }
-

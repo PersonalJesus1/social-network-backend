@@ -16,6 +16,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -51,14 +52,13 @@ public class CommentFacade {
                 .toList();
     }
 
-    public ResponseUpdatedCommentDTO updateComment(Long id, UpdateCommentDTO dto) {
+    public ResponseUpdatedCommentDTO updateComment(Long id, UpdateCommentDTO dto, Authentication authentication) {
         validate(dto);
         Comment comment = new Comment();
         comment.setText(dto.text());
-        Comment updatedComment = commentService.updateComment(id, comment);
+        Comment updatedComment = commentService.updateComment(id, comment, authentication);
         return mapToUpdatedResponseDto(updatedComment);
     }
-
 
     public void deleteComment(Long id) {
         commentService.deleteComment(id);

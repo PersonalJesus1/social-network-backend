@@ -10,6 +10,7 @@ import jakarta.validation.constraints.Min;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -32,12 +33,16 @@ public class MessageController {
     @PostMapping
     public ResponseEntity<ResponseMessageDTO> createMessage(@Valid @RequestBody CreateMessageDTO messageDTO) {
         return ResponseEntity.status(HttpStatus.CREATED).body(messageFacade.createMessage(messageDTO));
-
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ResponseUpdatedMessageDTO> updateMessage(@PathVariable Long id, @Valid @RequestBody UpdateMessageDTO dto) {
-        return ResponseEntity.ok(messageFacade.updateMessage(id, dto));
+    public ResponseEntity<ResponseUpdatedMessageDTO> updateMessage(@PathVariable Long id, @Valid @RequestBody UpdateMessageDTO dto,Authentication authentication) {
+        return ResponseEntity.ok(messageFacade.updateMessage(id, dto,authentication));
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<ResponseMessageDTO> getMessage(@PathVariable Long id,Authentication authentication) {
+        return ResponseEntity.ok(messageFacade.getMessage(id, authentication));
     }
 
     @GetMapping("/user/{userId}")

@@ -16,6 +16,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -47,13 +48,17 @@ public class MessageFacade {
                 .toList();
     }
 
-    public ResponseUpdatedMessageDTO updateMessage(Long id, UpdateMessageDTO dto) {
+    public ResponseUpdatedMessageDTO updateMessage(Long id, UpdateMessageDTO dto, Authentication authentication) {
         validate(dto);
         Message updatedMessage = new Message();
         updatedMessage.setUpdatedDate(LocalDateTime.now());
         updatedMessage.setText(dto.text());
-        Message message = messageService.updateMessage(id, updatedMessage);
+        Message message = messageService.updateMessage(id, updatedMessage, authentication);
         return mapToUpdatedResponseDto(message);
+    }
+
+    public ResponseMessageDTO getMessage(Long messageId, Authentication authentication) {
+        return mapToResponseDto(messageService.getMessage(messageId, authentication));
     }
 
     public void deleteMessage(Long id) {

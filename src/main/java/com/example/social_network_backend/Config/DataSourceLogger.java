@@ -19,7 +19,6 @@ public class DataSourceLogger {
 
     @PostConstruct
     public void logDataSource() throws SQLException {
-
         System.out.println("Active profiles: " + Arrays.toString(environment.getActiveProfiles()));
         System.out.println("DataSource class: " + dataSource.getClass().getName());
         System.out.println("URL: " + dataSource.getConnection().getMetaData().getURL());

@@ -1,34 +1,51 @@
 package com.example.social_network_backend.Controllers;
 
-import com.example.social_network_backend.DTO.AuthRequest;
-import com.example.social_network_backend.Services.UserService;
+import com.example.social_network_backend.DTO.Auth.AuthenticationRequestDTO;
+import com.example.social_network_backend.DTO.Auth.ChangePasswordRequest;
+import com.example.social_network_backend.DTO.User.CreateUserDTO;
+import com.example.social_network_backend.Facades.AuthenticationFacade;
+import com.example.social_network_backend.DTO.Auth.AuthenticationResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.core.Authentication;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
-import java.util.Map;
-
+@Validated
 @RestController
 @RequestMapping("/api/v1/auth")
 public class AuthController {
+    private final AuthenticationFacade authenticationFacade;
 
-    private final UserService userService;
-
-    public AuthController(UserService userService) {
-        this.userService = userService;
+    public AuthController(AuthenticationFacade authenticationFacade) {
+        this.authenticationFacade = authenticationFacade;
     }
 
-   @PostMapping("/login")
-   public ResponseEntity<Map<String, String>> login(@RequestBody AuthRequest authRequest) {
-       String token = userService.authenticate(authRequest.email(), authRequest.password());
+    @PostMapping("/register")
+    public ResponseEntity<AuthenticationResponse> register(
+            @RequestBody CreateUserDTO CreateUserDTO) {
+        return ResponseEntity.ok(authenticationFacade.register(CreateUserDTO));
+    }
 
-       // Wrap token into JSON
-       Map<String, String> response = new HashMap<>();
-       response.put("token", token);
+    @PostMapping("/login")
+    public ResponseEntity<AuthenticationResponse> login(@RequestBody AuthenticationRequestDTO authenticationRequestDTO) {
+        AuthenticationResponse response = authenticationFacade.authenticate(authenticationRequestDTO);
+        return ResponseEntity.ok(response);
+    }
 
-       return ResponseEntity.ok(response);
-   }
+    @PostMapping("/refresh-token")
+    public void refreshToken(
+            HttpServletRequest request,
+            HttpServletResponse response) {
+        authenticationFacade.refreshToken(request, response);
+    }
+
+    @PatchMapping
+    public ResponseEntity<?> changePassword(
+            @RequestBody ChangePasswordRequest request,
+            Authentication authentication) {
+        authenticationFacade.changePassword(request, authentication);
+        return ResponseEntity.ok().build();
+    }
 }

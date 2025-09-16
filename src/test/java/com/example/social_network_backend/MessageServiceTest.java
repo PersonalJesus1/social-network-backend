@@ -3,9 +3,6 @@ package com.example.social_network_backend;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-import com.example.social_network_backend.DTO.Message.CreateMessageDTO;
-import com.example.social_network_backend.DTO.Message.UpdateMessageDTO;
-import com.example.social_network_backend.Entities.Comment;
 import com.example.social_network_backend.Entities.Message;
 import com.example.social_network_backend.Entities.User;
 import com.example.social_network_backend.Repositories.MessageRepository;
@@ -21,6 +18,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.Authentication;
 
 import java.util.List;
 import java.util.Optional;
@@ -41,19 +39,22 @@ class MessageServiceTest {
     private User creator;
     private User receiver;
 
+    @Mock
+    private Authentication authentication;
+
     @BeforeEach
     void setUp() {
         creator = new User();
         creator.setId(1L);
+        creator.setEmail("test@example.com");
         receiver = new User();
         receiver.setId(2L);
-
+        receiver.setEmail("test2@example.com");
         message = new Message();
         message.setId(1L);
         message.setCreator(creator);
         message.setReceiver(receiver);
         message.setText("Hello");
-
     }
 
     @Test
@@ -81,12 +82,11 @@ class MessageServiceTest {
     @Test
     void updateMessage_Success() {
         when(messageRepository.findById(1L)).thenReturn(Optional.of(message));
+        when(authentication.getName()).thenReturn("test@example.com");
         when(messageRepository.save(any(Message.class))).thenReturn(message);
         Message newMessageData = new Message();
         newMessageData.setText("Updated text");
-
-        Message updatedMessage = messageService.updateMessage(1L, newMessageData);
-
+        Message updatedMessage = messageService.updateMessage(1L, newMessageData, authentication);
         assertNotNull(updatedMessage);
         verify(messageRepository).save(any(Message.class));
         assertEquals(newMessageData.getText(), updatedMessage.getText());
@@ -96,7 +96,7 @@ class MessageServiceTest {
     void updateMessage_ThrowsException_WhenMessageNotFound() {
         when(messageRepository.findById(1L)).thenReturn(Optional.empty());
 
-        assertThrows(EntityNotFoundException.class, () -> messageService.updateMessage(1L, message));
+        assertThrows(EntityNotFoundException.class, () -> messageService.updateMessage(1L, message, authentication));
     }
 
     @Test
@@ -129,7 +129,6 @@ class MessageServiceTest {
     @Test
     void getMessagesByUserId_ThrowsException_WhenUserNotFound() {
         when(userRepository.findById(1L)).thenReturn(Optional.empty());
-
         assertThrows(EntityNotFoundException.class, () -> messageService.getMessagesByUserId(1L));
     }
 }

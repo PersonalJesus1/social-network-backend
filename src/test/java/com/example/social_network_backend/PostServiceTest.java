@@ -3,11 +3,10 @@ package com.example.social_network_backend;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-import com.example.social_network_backend.DTO.Post.CreatePostDTO;
-import com.example.social_network_backend.DTO.Post.UpdatePostDTO;
 import com.example.social_network_backend.Entities.Image;
 import com.example.social_network_backend.Entities.Post;
 import com.example.social_network_backend.Entities.User;
+import com.example.social_network_backend.Entities.UserRole;
 import com.example.social_network_backend.Repositories.PostRepository;
 import com.example.social_network_backend.Repositories.UserRepository;
 import com.example.social_network_backend.Services.FileService;
@@ -20,6 +19,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.Authentication;
 
 import java.util.List;
 import java.util.Optional;
@@ -41,11 +41,15 @@ class PostServiceTest {
     private User user;
     private Post post;
 
+    @Mock
+    private Authentication authentication;
+
     @BeforeEach
     void setUp() {
         user = new User();
         user.setId(1L);
         user.setEmail("test@example.com");
+        user.setRole(UserRole.USER);
 
         post = new Post();
         post.setId(1L);
@@ -59,7 +63,6 @@ class PostServiceTest {
 
     @Test
     void createPost_Success() {
-        // Arrange
         Post inputPost = new Post();
         inputPost.setText("Hello world");
 
@@ -71,16 +74,14 @@ class PostServiceTest {
         when(fileService.saveImage(anyString(), eq(user.getEmail()))).thenReturn(dummyImage);
         when(postRepository.save(any(Post.class))).thenReturn(inputPost);
 
-        // Act
         Post created = postService.createPost(1L, inputPost);
 
-        // Assert
         assertNotNull(created);
         assertEquals("Hello world", created.getText());
-        verify(fileService).deleteFile(anyString());
         verify(fileService).saveImage(anyString(), eq(user.getEmail()));
         verify(postRepository).save(any(Post.class));
     }
+
     @Test
     void createPost_UserNotFound_ShouldThrowException() {
         when(userRepository.findById(99L)).thenReturn(Optional.empty());
@@ -133,7 +134,6 @@ class PostServiceTest {
 
     @Test
     void updatePost_Success() {
-        // Arrange
         Post updatedPost = new Post();
         updatedPost.setText("Updated text");
 
@@ -143,19 +143,19 @@ class PostServiceTest {
         updatedPost.setCreator(user);
 
         when(postRepository.findById(1L)).thenReturn(Optional.of(post));
+        when(authentication.getName()).thenReturn("test@example.com");
         when(fileService.saveImage(anyString(), eq(user.getEmail()))).thenReturn(updatedImage);
         when(postRepository.save(any(Post.class))).thenReturn(updatedPost);
 
-        // Act
-        Post result = postService.updatePost(1L, updatedPost);
+        Post result = postService.updatePost(1L, updatedPost, authentication);
 
-        // Assert
         assertNotNull(result);
         assertEquals("Updated text", result.getText());
         verify(fileService).deleteFile(anyString());
         verify(fileService).saveImage(anyString(), eq(user.getEmail()));
         verify(postRepository).save(any(Post.class));
     }
+
     @Test
     void updatePost_PostNotFound_ShouldThrowException() {
         when(postRepository.findById(1L)).thenReturn(Optional.empty());
@@ -165,13 +165,13 @@ class PostServiceTest {
         updatedPost.setImage(new Image());
         updatedPost.setCreator(user);
 
-        assertThrows(EntityNotFoundException.class, () -> postService.updatePost(1L, updatedPost));
+        assertThrows(EntityNotFoundException.class, () -> postService.updatePost(1L, updatedPost, authentication));
     }
 
     @Test
     void updatePost_PostNotFound() {
         when(postRepository.findById(1L)).thenReturn(Optional.empty());
-        assertThrows(EntityNotFoundException.class, () -> postService.updatePost(1L, post));
+        assertThrows(EntityNotFoundException.class, () -> postService.updatePost(1L, post, authentication));
     }
 
     @Test

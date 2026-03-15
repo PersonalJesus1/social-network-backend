@@ -13,8 +13,9 @@ services:
       POSTGRES_DB: social_network
       PGDATA: /var/lib/postgresql/data/pgdata
     restart: always
+
   app:
-    image: local-network
+    build: .
     container_name: app
     ports:
       - 8080:8080
@@ -27,6 +28,7 @@ services:
     restart: always
     depends_on:
       - db
+
   nginx:
     image: nginx:1.17.2-alpine
     container_name: nginx

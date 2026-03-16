@@ -8,7 +8,6 @@ services:
     volumes:
       - ./pg_data:/var/lib/postgresql/data/pgdata
     environment:
-      POSTGRES_DB: local-network
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgresql
       PGDATA: /var/lib/postgresql/data/pgdata
@@ -22,7 +21,6 @@ services:
     environment:
       POSTGRES_HOST: db
       POSTGRES_PORT: 5432
-      POSTGRES_DB: social_network
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgresql
     restart: always
